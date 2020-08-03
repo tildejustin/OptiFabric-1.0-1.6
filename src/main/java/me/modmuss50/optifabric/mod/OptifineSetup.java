@@ -4,6 +4,7 @@ import me.modmuss50.optifabric.patcher.ClassCache;
 import me.modmuss50.optifabric.patcher.LambadaRebuiler;
 import me.modmuss50.optifabric.patcher.PatchSplitter;
 import me.modmuss50.optifabric.patcher.RemapUtils;
+import me.modmuss50.optifabric.util.ZipUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.launch.common.FabricLauncher;
 import net.fabricmc.loader.launch.common.FabricLauncherBase;
@@ -19,7 +20,6 @@ import net.fabricmc.tinyremapper.IMappingProvider;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -91,34 +90,25 @@ public class OptifineSetup {
 
 		//A jar without srgs
 		File jarOfTheFree = new File(versionDir, "/Optifine-jarofthefree.jar");
-		List<String> srgs = new ArrayList<>();
 
 		System.out.println("De-Volderfiying jar");
 
 		//Find all the SRG named classes and remove them
-		ZipUtil.iterate(optifineModJar, (in, zipEntry) -> {
+		ZipUtils.transform(optifineModJar, (zip, zipEntry) -> {
 			String name = zipEntry.getName();
 			if(name.startsWith("com/mojang/blaze3d/platform/")){
 				if(name.contains("$")){
 					String[] split = name.replace(".class", "").split("\\$");
 					if(split.length >= 2){
 						if(split[1].length() > 2){
-							srgs.add(name);
+							return false;
 						}
 					}
 				}
 			}
 
-			if(name.startsWith("srg/") || name.startsWith("net/minecraft/")){
-				srgs.add(name);
-			}
-		});
-
-		if(jarOfTheFree.exists()){
-			jarOfTheFree.delete();
-		}
-
-		ZipUtil.removeEntries(optifineModJar, srgs.toArray(new String[0]), jarOfTheFree);
+			return !(name.startsWith("srg/") || name.startsWith("net/minecraft/"));
+		}, jarOfTheFree);
 
 		System.out.println("Building lambada fix mappings");
 		LambadaRebuiler rebuiler = new LambadaRebuiler(jarOfTheFree, getMinecraftJar().toFile());
@@ -154,7 +144,7 @@ public class OptifineSetup {
 			if(optifineClasses.exists()){
 				FileUtils.deleteDirectory(optifineClasses);
 			}
-			ZipUtil.unpack(remappedJar, optifineClasses);
+			ZipUtils.extract(remappedJar, optifineClasses);
 		}
 
 		return Pair.of(remappedJar, classCache);

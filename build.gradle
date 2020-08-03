@@ -40,13 +40,10 @@ dependencies {
 	modCompile "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
 	include "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
 
-	//Used to handle the zip processing
-	compile "org.zeroturnaround:zt-zip:${project.zt_zip_version}"
-	include "org.zeroturnaround:zt-zip:${project.zt_zip_version}"
-
-	//Required for zt-zip, kinda annoying
-	include "org.slf4j:slf4j-simple:${project.slf4j_version}"
-	include "org.slf4j:slf4j-api:${project.slf4j_version}"
+	modRuntime "me.shedaniel:RoughlyEnoughItems:4.5.4"
+	modCompileOnly("me.shedaniel.cloth.api:cloth-client-events-v0:1.0.4") {
+		transitive(false)
+	}
 }
 
 task unzip(type: Copy) {
