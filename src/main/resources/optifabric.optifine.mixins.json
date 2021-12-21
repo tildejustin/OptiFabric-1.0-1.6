@@ -5,9 +5,8 @@
   "mixins": [
     "MixinReflectorClass",
     "MixinScreen",
-    "MixinClientBuiltinResourcePackProvider",
     "MixinOptifineConfig",
-    "MixinGameOptions"
+    "MixinDefaultResourcePack"
   ],
   "injectors": {
     "defaultRequire": 1
