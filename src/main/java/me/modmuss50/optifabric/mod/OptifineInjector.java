@@ -1,7 +1,7 @@
 package me.modmuss50.optifabric.mod;
 
 import com.chocohead.mm.api.ClassTinkerers;
-import me.modmuss50.optifabric.patcher.ASMUtils;
+import me.modmuss50.optifabric.util.ASMUtils;
 import me.modmuss50.optifabric.patcher.ChunkRendererFix;
 import me.modmuss50.optifabric.patcher.ClassCache;
 import net.fabricmc.loader.api.FabricLoader;
@@ -38,7 +38,7 @@ public class OptifineInjector {
 		chunkRenderer = FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", "net.minecraft.class_851").replaceAll("\\.", "/");
 		particleManager = FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", "net.minecraft.class_702").replaceAll("\\.", "/");
 
-		classCache.getClasses().forEach(s -> ClassTinkerers.addTransformation(s.replaceAll("/", ".").substring(0, s.length() - 6), transformer));
+		classCache.getClasses().forEach(s -> ClassTinkerers.addReplacement(s.replaceAll("/", ".").substring(0, s.length() - 6), transformer));
 	}
 
 	//I have no idea why and how this works, if you know better please let me know

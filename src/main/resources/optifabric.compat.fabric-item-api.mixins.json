@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "me.modmuss50.optifabric.compat.fabricitemapi.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MobEntityMixin"
+  ],
+  "plugin": "me.modmuss50.optifabric.compat.InterceptingMixinPlugin",
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

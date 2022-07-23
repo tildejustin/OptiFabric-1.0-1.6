@@ -2,14 +2,12 @@ package me.modmuss50.optifabric.patcher;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.zeroturnaround.zip.ZipUtil;
+
+import me.modmuss50.optifabric.util.ZipUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 //Pulls out the patched classes and saves into a classCache, and also creates an optifine jar without these classes
 public class PatchSplitter {
@@ -21,27 +19,24 @@ public class PatchSplitter {
 			classesDir.mkdir();
 		}
 		ClassCache classCache = new ClassCache(inputHash);
-		try (JarFile jarFile = new JarFile(inputFile)) {
-			Enumeration<JarEntry> entrys = jarFile.entries();
-			while (entrys.hasMoreElements()) {
-				JarEntry entry = entrys.nextElement();
-				if ((entry.getName().startsWith("net/minecraft/") || entry.getName().startsWith("com/mojang/")) && entry.getName().endsWith(".class")) {
-					try(InputStream inputStream = jarFile.getInputStream(entry)){
-						String name = entry.getName();
-						byte[] bytes = IOUtils.toByteArray(inputStream);
-						classCache.addClass(name, bytes);
-						if(extractClasses){
-							File classFile = new File(classesDir, entry.getName());
-							FileUtils.writeByteArrayToFile(classFile, bytes);
-						}
+		ZipUtils.transformInPlace(inputFile, (jarFile, entry) -> {
+			if ((entry.getName().startsWith("net/minecraft/") || entry.getName().startsWith("com/mojang/")) && entry.getName().endsWith(".class")) {
+				try(InputStream inputStream = jarFile.getInputStream(entry)){
+					String name = entry.getName();
+					byte[] bytes = IOUtils.toByteArray(inputStream);
+					classCache.addClass(name, bytes);
+					if(extractClasses){
+						File classFile = new File(classesDir, entry.getName());
+						FileUtils.writeByteArrayToFile(classFile, bytes);
 					}
 				}
+
+				//Remove all the classes that are going to be patched in, we dont want theses on the classpath
+				return false;
+			} else {
+				return true;
 			}
-		}
-
-
-		//Remove all the classes that are going to be patched in, we dont want theses on the classpath
-		ZipUtil.removeEntries(inputFile, classCache.getClasses().stream().toArray(String[]::new));
+		});
 
 		System.out.println("Found " + classCache.getClasses().size() + " patched classes");
 		classCache.save(classCacheOutput);
