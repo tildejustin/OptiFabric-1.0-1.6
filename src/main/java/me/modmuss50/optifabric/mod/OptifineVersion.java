@@ -2,7 +2,7 @@ package me.modmuss50.optifabric.mod;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import me.modmuss50.optifabric.patcher.ASMUtils;
+import me.modmuss50.optifabric.util.ASMUtils;
 import me.modmuss50.optifabric.util.ZipUtils;
 import net.fabricmc.loader.api.FabricLoader;
 

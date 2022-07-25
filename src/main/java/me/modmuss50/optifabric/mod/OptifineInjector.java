@@ -1,10 +1,8 @@
 package me.modmuss50.optifabric.mod;
 
 import com.chocohead.mm.api.ClassTinkerers;
-import me.modmuss50.optifabric.patcher.ASMUtils;
-import me.modmuss50.optifabric.patcher.fixes.ChunkRendererFix;
+import me.modmuss50.optifabric.util.ASMUtils;
 import me.modmuss50.optifabric.patcher.ClassCache;
-import me.modmuss50.optifabric.patcher.fixes.ClassFixer;
 import me.modmuss50.optifabric.patcher.fixes.OptifineFixer;
 import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.Opcodes;
