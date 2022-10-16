@@ -3,7 +3,7 @@
   "id": "optifabric",
   "version": "${version}",
 
-  "name": "Optifabric",
+  "name": "OptiFabric Origins",
   "description": "Optifabric is a mod that loads optifine into fabric",
   "authors": [
     "Modmuss50",
