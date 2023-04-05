@@ -1,5 +1,0 @@
-accessWidener   v1  named
-# accessible method net/minecraft/client/resource/language/I18n method_4403 (Lnet/minecraft/client/resource/language/TranslationStorage;)V
-accessible method net/minecraft/block/Block setOpacity (I)Lnet/minecraft/block/Block;
-accessible field net/minecraft/entity/LivingEntity despawnCounter I
-accessible field net/minecraft/resource/AbstractFileResourcePack base Ljava/io/File;

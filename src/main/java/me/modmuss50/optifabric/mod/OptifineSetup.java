@@ -76,14 +76,6 @@ public class OptifineSetup {
 			return Pair.of(remappedJar, classCache);
 		}
 
-		if (OptifineVersion.jarType == OptifineVersion.JarType.OPTFINE_INSTALLER) {
-			File optifineMod = new File(versionDir, "/Optifine-mod.jar");
-			if (!optifineMod.exists()) {
-				OptifineInstaller.extract(optifineModJar, optifineMod, getMinecraftJar().toFile());
-			}
-			optifineModJar = optifineMod;
-		}
-
 		System.out.println("Setting up optifine for the first time, this may take a few seconds.");
 
 		//A jar without srgs
@@ -132,10 +124,6 @@ public class OptifineSetup {
 		//We are done, lets get rid of the stuff we no longer need
 		lambadaFixJar.delete();
 		jarOfTheFree.delete();
-
-		if(OptifineVersion.jarType == OptifineVersion.JarType.OPTFINE_INSTALLER){
-			optifineModJar.delete();
-		}
 
 		File extractedMappings = new File(versionDir, "mappings.tiny");
 		File fieldMappings = new File(versionDir, "mappings.full.tiny");

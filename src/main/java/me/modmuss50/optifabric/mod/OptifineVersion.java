@@ -30,7 +30,7 @@ public class OptifineVersion {
 				if (file.isDirectory()) {
 					continue;
 				}
-				if (file.getName().endsWith(".jar")) {
+				if (file.getName().endsWith(".zip")) {
 					JarType type = getJarType(file);
 					if (type.error) {
 						if(!type.name().equals("INCOMPATIBE")){
@@ -39,7 +39,7 @@ public class OptifineVersion {
 							continue;
 						}
 					}
-					if (type == JarType.OPIFINE_MOD || type == JarType.OPTFINE_INSTALLER) {
+					if (type == JarType.OPIFINE_MOD) {
 						if(optifineJar != null){
 							OptifabricError.setError("Found 2 or more optifine jars, please ensure you only have 1 copy of optifine in the mods folder!");
 							throw new FileNotFoundException("Multiple optifine jars");
@@ -82,30 +82,19 @@ public class OptifineVersion {
 			return JarType.INCOMPATIBE;
 		}
 
-		String currentMcVersion = "1.7.10";
+		String currentMcVersion = "1.3.2";
 
 		if (!currentMcVersion.equals(minecraftVersion)) {
 			OptifabricError.setError(String.format("This version of optifine is not compatible with the current minecraft version\n\n Optifine requires %s you have %s", minecraftVersion, currentMcVersion));
 			return JarType.INCOMPATIBE;
 		}
 
-		Holder<Boolean> isInstaller = new Holder<>(false);
-		ZipUtil.iterate(file, (in, zipEntry) -> {
-			if (zipEntry.getName().startsWith("patch/")) {
-				isInstaller.setValue(true);
-			}
-		});
-
-		if (isInstaller.getValue()) {
-			return JarType.OPTFINE_INSTALLER;
-		} else {
-			return JarType.OPIFINE_MOD;
-		}
+		return JarType.OPIFINE_MOD;
 	}
 
 	public enum JarType {
 		OPIFINE_MOD(false),
-		OPTFINE_INSTALLER(false),
+//		OPTFINE_INSTALLER(false),
 		INCOMPATIBE(true),
 		SOMETHINGELSE(false);
 

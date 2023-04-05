@@ -2,8 +2,8 @@
 //file:noinspection GradlePackageUpdate
 
 plugins {
-	id 'fabric-loom' version "0.7-SNAPSHOT" // To use chocoloom, change the version to a commit hash
-	id 'maven-publish'
+	id 'fabric-loom' version "1.1-SNAPSHOT"
+	id 'legacy-looming' version "1.1-SNAPSHOT" // Version must be the same as fabric-loom's
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -13,32 +13,26 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
-repositories {
-	maven {
-		name = "legacy-fabric"
-		url = "https://maven.legacyfabric.net"
-	}
-	mavenCentral()
-	maven { url 'https://jitpack.io' }
-}
-
 // Comment out this block if you're using Chocoloom
 // Comment when using loom 0.10
-minecraft {
-	accessWidener = file("src/main/resources/optifabric.accesswidener")
-	intermediaryUrl = {
-		return "https://maven.legacyfabric.net/net/fabricmc/intermediary/" + it + "/intermediary-" + it + "-v2.jar"
+loom {
+	setIntermediaryUrl('https://repo.legacyfabric.net/repository/legacyfabric/net/legacyfabric/intermediary/%1$s/intermediary-%1$s-v2.jar');
+}
+
+repositories {
+	maven {
+		name = 'Jitpack'
+		url = 'https://jitpack.io'
 	}
 }
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	mappings "net.legacyfabric:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	implementation 'com.google.guava:guava:23.5-jre'
-	modImplementation "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
-	include "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
+	modImplementation "com.github.tildejustin:Fabric-ASM:${project.fabric_asm_version}"
+	include "com.github.tildejustin:Fabric-ASM:${project.fabric_asm_version}"
 
 	//Used to handle the zip processing
 	implementation "org.zeroturnaround:zt-zip:${project.zt_zip_version}"
@@ -48,26 +42,16 @@ dependencies {
 	include "org.slf4j:slf4j-simple:${project.slf4j_version}"
 	include "org.slf4j:slf4j-api:${project.slf4j_version}"
 
-	// Hacks that make mac os work
-	if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-		implementation 'org.lwjgl.lwjgl:lwjgl_util:2.9.4-nightly-20150209'
-		implementation 'org.lwjgl.lwjgl:lwjgl:2.9.4-nightly-20150209'
-		implementation 'org.lwjgl.lwjgl:lwjgl-platform:2.9.4-nightly-20150209'
-	}
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
+	include 'org.apache.commons:commons-lang3:3.12.0'
+
+	implementation 'commons-io:commons-io:2.11.0'
+	include 'commons-io:commons-io:2.11.0'
+
+	implementation 'commons-codec:commons-codec:1.15'
+	include 'commons-codec:commons-codec:1.15'
 }
 
-// More hacks that make mac os work
-if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-	configurations.all {
-		resolutionStrategy {
-			dependencySubstitution {
-				substitute module('org.lwjgl.lwjgl:lwjgl_util:2.9.2-nightly-201408222') with module('org.lwjgl.lwjgl:lwjgl_util:2.9.4-nightly-20150209')
-				substitute module('org.lwjgl.lwjgl:lwjgl:2.9.2-nightly-201408222') with module('org.lwjgl.lwjgl:lwjgl:2.9.4-nightly-20150209')
-			}
-			force 'org.lwjgl.lwjgl:lwjgl-platform:2.9.4-nightly-20150209'
-		}
-	}
-}
 
 processResources {
 	inputs.property "version", project.version
@@ -82,6 +66,7 @@ processResources {
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
+	it.options.release = 8
 }
 
 java {
@@ -93,20 +78,5 @@ java {
 jar {
 	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}"}
-	}
-}
-
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-		}
-	}
-
-	// select the repositories you want to publish to
-	repositories {
-		// uncomment to publish to the local maven
-		// mavenLocal()
 	}
 }
