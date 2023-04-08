@@ -7,15 +7,14 @@ import net.fabricmc.api.ModInitializer;
 @Environment(EnvType.CLIENT)
 public class Optifabric implements ModInitializer {
 
-	public static void checkForErrors() {
-		if (OptifabricError.hasError()) {
-			System.out.println("An OptiFabric error has occurred");
-			System.out.println(-1);
-		}
-	}
+    public static void checkForErrors() {
+        if (OptifabricError.hasError()) {
+            System.out.println("An Optifabric error has occurred");
+        }
+    }
 
-	@Override
-	public void onInitialize() {
+    @Override
+    public void onInitialize() {
 
-	}
+    }
 }

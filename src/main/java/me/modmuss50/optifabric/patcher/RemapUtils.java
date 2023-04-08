@@ -13,31 +13,31 @@ import java.util.List;
 
 public class RemapUtils {
 
-	public static IMappingProvider getTinyRemapper(File mappings, String from, String to) {
-		return TinyUtils.createTinyMappingProvider(mappings.toPath(), from, to);
-	}
+    public static IMappingProvider getTinyRemapper(File mappings, String from, String to) {
+        return TinyUtils.createTinyMappingProvider(mappings.toPath(), from, to);
+    }
 
-	public static void mapJar(Path output, Path input, IMappingProvider mappings, List<Path> libraries) throws IOException {
-		Files.deleteIfExists(output);
+    public static void mapJar(Path output, Path input, IMappingProvider mappings, List<Path> libraries) throws IOException {
+        Files.deleteIfExists(output);
 
-		TinyRemapper remapper = TinyRemapper.newRemapper().withMappings(mappings).renameInvalidLocals(true).rebuildSourceFilenames(true).build();
+        TinyRemapper remapper = TinyRemapper.newRemapper().withMappings(mappings).renameInvalidLocals(true).rebuildSourceFilenames(true).build();
 
-		try {
-			OutputConsumerPath outputConsumer = new OutputConsumerPath(output);
-			outputConsumer.addNonClassFiles(input);
-			remapper.readInputs(input);
+        try {
+            @SuppressWarnings("deprecation") OutputConsumerPath outputConsumer = new OutputConsumerPath(output);
+            outputConsumer.addNonClassFiles(input);
+            remapper.readInputs(input);
 
-			for (Path path : libraries) {
-				remapper.readClassPath(path);
-			}
+            for (Path path : libraries) {
+                remapper.readClassPath(path);
+            }
 
-			remapper.apply(outputConsumer);
-			outputConsumer.close();
-			remapper.finish();
-		} catch (Exception e) {
-			remapper.finish();
-			throw new RuntimeException("Failed to remap jar", e);
-		}
-	}
+            remapper.apply(outputConsumer);
+            outputConsumer.close();
+            remapper.finish();
+        } catch (Exception e) {
+            remapper.finish();
+            throw new RuntimeException("Failed to remap jar", e);
+        }
+    }
 
 }

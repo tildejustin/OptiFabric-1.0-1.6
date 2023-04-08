@@ -14,19 +14,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TitleScreen.class)
 public abstract class MixinTitleScreen extends Screen {
 
-	protected MixinTitleScreen() {
-		super();
-	}
+    protected MixinTitleScreen() {
+        super();
+    }
 
-	@Inject(method = "init", at = @At("RETURN"))
-	private void init(CallbackInfo info) {
-		Optifabric.checkForErrors();
-	}
+    @Inject(method = "init", at = @At("RETURN"))
+    private void init(CallbackInfo info) {
+        Optifabric.checkForErrors();
+    }
 
-	@Inject(method = "render", at = @At("RETURN"))
-	private void render(int int_1, int int_2, float float_1, CallbackInfo info) {
-		if (!OptifabricError.hasError()) {
-			this.drawWithShadow(Minecraft.getMinecraft().textRenderer, OptifineVersion.version, 2, this.height - 20, 0xFFFFFFFF);
-		}
-	}
+    @Inject(method = "render", at = @At("RETURN"))
+    private void render(int int_1, int int_2, float float_1, CallbackInfo info) {
+        if (!OptifabricError.hasError()) {
+            this.drawWithShadow(Minecraft.getMinecraft().textRenderer, OptifineVersion.version, 2, this.height - 20, 0xFFFFFFFF);
+        }
+    }
 }
