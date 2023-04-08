@@ -1,7 +1,7 @@
 package me.modmuss50.optifabric.mod;
 
 import me.modmuss50.optifabric.patcher.ClassCache;
-import me.modmuss50.optifabric.patcher.LambadaRebuilder;
+import me.modmuss50.optifabric.patcher.LambdaRebuilder;
 import me.modmuss50.optifabric.patcher.PatchSplitter;
 import me.modmuss50.optifabric.patcher.RemapUtils;
 import net.fabricmc.loader.api.FabricLoader;
@@ -128,7 +128,7 @@ public class OptifineSetup {
         ZipUtil.removeEntries(optifineModJar, srgs.toArray(new String[0]), jarOfTheFree);
 
         System.out.println("Building lambada fix mappings");
-        LambadaRebuilder rebuilder = new LambadaRebuilder(jarOfTheFree, getMinecraftJar().toFile());
+        LambdaRebuilder rebuilder = new LambdaRebuilder(jarOfTheFree, getMinecraftJar().toFile());
         rebuilder.buildLambadaMap();
 
         System.out.println("Remapping optifine with fixed lambada names");

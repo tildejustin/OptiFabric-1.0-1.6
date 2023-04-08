@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class LambadaRebuilder implements IMappingProvider {
+public class LambdaRebuilder implements IMappingProvider {
 
     private final JarFile optifineJar;
     private final JarFile clientJar;
@@ -19,7 +19,7 @@ public class LambadaRebuilder implements IMappingProvider {
     private final Map<String, String> methodMap = new HashMap<>();
     private final List<String> usedMethods = new ArrayList<>(); //Used to prevent duplicates
 
-    public LambadaRebuilder(File optifineFile, File minecraftClientFile) throws IOException {
+    public LambdaRebuilder(File optifineFile, File minecraftClientFile) throws IOException {
         optifineJar = new JarFile(optifineFile);
         clientJar = new JarFile(minecraftClientFile);
 
