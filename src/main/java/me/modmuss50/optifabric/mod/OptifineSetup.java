@@ -74,21 +74,21 @@ public class OptifineSetup {
             versionDir.mkdirs();
         }
 
-        File remappedJar = new File(versionDir, "Optifine-mapped.jar");
-        File optifinePatches = new File(versionDir, "Optifine.classes");
+        File remappedJar = new File(versionDir, "optifine-mapped.jar");
+        File optifinePatches = new File(versionDir, "optifine.classes");
 
         ClassCache classCache = null;
         if (remappedJar.exists() && optifinePatches.exists()) {
             classCache = ClassCache.read(optifinePatches);
             //Validate that the classCache found is for the same input jar
-            if (!Arrays.equals(classCache.getHash(), modHash)) {
+            if (!Arrays.equals(classCache.getHash(), modHash) || Optifabric.config.alwayRecache) {
                 System.out.println("Class cache is from a different optifine jar, deleting and re-generating");
                 classCache = null;
                 optifinePatches.delete();
             }
         }
 
-        if (remappedJar.exists() && classCache != null) {
+        if (remappedJar.exists() && classCache != null && !Optifabric.config.alwayRecache) {
             System.out.println("Found existing patched optifine jar, using that");
             return Pair.of(remappedJar, classCache);
         }
@@ -126,6 +126,10 @@ public class OptifineSetup {
         }
 
         ZipUtil.removeEntries(optifineModJar, srgs.toArray(new String[0]), jarOfTheFree);
+        Optifabric.ClassExcluder classExcluder = Optifabric.getVersionExcluder();
+        if (classExcluder != null) {
+            ZipUtil.removeEntries(optifineModJar, classExcluder.classes, jarOfTheFree);
+        }
 
         System.out.println("Building lambada fix mappings");
         LambdaRebuilder rebuilder = new LambdaRebuilder(jarOfTheFree, getMinecraftJar().toFile());
@@ -148,6 +152,7 @@ public class OptifineSetup {
         extractedMappings.delete();
         fieldMappings.delete();
 
+        // TODO: add this to the json config
         boolean extractClasses = Boolean.parseBoolean(System.getProperty("optifabric.extract", "false"));
         if (extractClasses) {
             System.out.println("Extracting optifine classes");
