@@ -12,6 +12,7 @@ group = project.maven_group
 
 loom {
 	setIntermediaryUrl('https://repo.legacyfabric.net/repository/legacyfabric/net/legacyfabric/intermediary/%1$s/intermediary-%1$s-v2.jar')
+	accessWidenerPath = file("src/main/resources/optifabric.accesswidener")
 }
 
 repositories {
