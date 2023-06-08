@@ -1,6 +1,7 @@
 package me.modmuss50.optifabric.mod;
 
 import com.chocohead.mm.api.ClassTinkerers;
+import me.modmuss50.optifabric.compat.fabricrenderingfluids.FluidRendererFix;
 import me.modmuss50.optifabric.util.ASMUtils;
 import me.modmuss50.optifabric.patcher.ChunkRendererFix;
 import me.modmuss50.optifabric.patcher.ClassCache;
@@ -26,6 +27,7 @@ public class OptifineInjector {
 	ClassCache classCache;
 
 	String chunkRenderer;
+	String fluidRenderer;
 	String particleManager;
 
 	private static List<String> patched = new ArrayList<>();
@@ -36,6 +38,7 @@ public class OptifineInjector {
 
 	public void setup() throws IOException {
 		chunkRenderer = FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", "net.minecraft.class_851").replaceAll("\\.", "/");
+		fluidRenderer = FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", "net.minecraft.class_775").replaceAll("\\.", "/");
 		particleManager = FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", "net.minecraft.class_702").replaceAll("\\.", "/");
 
 		classCache.getClasses().forEach(s -> ClassTinkerers.addReplacement(s.replaceAll("/", ".").substring(0, s.length() - 6), transformer));
@@ -56,6 +59,10 @@ public class OptifineInjector {
 		//Patch the class to fix
 		if(target.name.equals(chunkRenderer)){
 			ChunkRendererFix.fix(source);
+		}
+
+		if (target.name.equals(fluidRenderer) && FabricLoader.getInstance().isModLoaded("fabric-rendering-fluids-v1")) {
+			FluidRendererFix.fix(source);
 		}
 
 		//Skip applying incompatible ParticleManager changes
