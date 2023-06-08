@@ -1,6 +1,8 @@
 package me.modmuss50.optifabric.patcher.fixes;
 
+import me.modmuss50.optifabric.compat.fabricrenderingfluids.FluidRendererFix;
 import me.modmuss50.optifabric.util.RemappingUtils;
+import net.fabricmc.loader.api.FabricLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,14 +44,19 @@ public class OptifineFixer {
 		//net/minecraft/client/render/item/HeldItemRenderer$1
 		skipClass("class_759$1");
 
+		if (FabricLoader.getInstance().isModLoaded("fabric-rendering-fluids-v1")) {
+			//net/minecraft/client/render/block/FluidRenderer
+			registerFix("class_775", new FluidRendererFix());
+		}
+
 	}
 
 	private void registerFix(String className, ClassFixer classFixer) {
-		classFixes.computeIfAbsent(RemappingUtils.fromIntermediary(className), s -> new ArrayList<>()).add(classFixer);
+		classFixes.computeIfAbsent(RemappingUtils.getClassName(className), s -> new ArrayList<>()).add(classFixer);
 	}
 
 	private void skipClass(String className) {
-		skippedClass.add(RemappingUtils.fromIntermediary(className));
+		skippedClass.add(RemappingUtils.getClassName(className));
 	}
 
 	public boolean shouldSkip(String className) {
