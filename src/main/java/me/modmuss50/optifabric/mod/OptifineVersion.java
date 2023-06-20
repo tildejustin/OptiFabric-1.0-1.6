@@ -87,7 +87,7 @@ public class OptifineVersion {
             return JarType.INCOMPATIBLE;
         }
 
-        List<String> versions = OptifineVersion.generateVersionList("1.6.4");
+        List<String> versions = OptifineVersion.generateVersionList( "1.4.7", "1.5.2");
 
         if (!versions.contains(minecraftVersion)) {
             OptifabricError.setError(String.format("This version of optifine is not compatible with the current minecraft version\n\n Optifine requires %s you have %s", minecraftVersion, versions));
