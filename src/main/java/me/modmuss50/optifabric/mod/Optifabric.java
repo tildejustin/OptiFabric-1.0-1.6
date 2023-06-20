@@ -34,7 +34,7 @@ public class Optifabric {
         try {
             if (CONFIG_FILE.createNewFile()) {
                 try (Writer writer = new FileWriter(CONFIG_FILE)) {
-                    gson.toJson(new Config(false, new ClassExcluder[]{new ClassExcluder("OptiFine_1.3.2_L_B2", new String[]{"ik.class"})}), writer);
+                    gson.toJson(new Config(false, new ClassExcluder[]{}), writer);
                 }
             }
         } catch (IOException e) {

@@ -8,6 +8,8 @@ import org.objectweb.asm.tree.FieldNode;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -29,7 +31,7 @@ public class OptifineVersion {
                 if (file.isDirectory()) {
                     continue;
                 }
-                if (file.getName().endsWith(".zip")) {
+                if (file.getName().endsWith(".zip") || file.getName().endsWith(".jar")) {
                     JarType type = getJarType(file);
                     if (type.error) {
                         if (!type.equals(JarType.INCOMPATIBLE)) {
@@ -85,14 +87,27 @@ public class OptifineVersion {
             return JarType.INCOMPATIBLE;
         }
 
-        String currentMcVersion = "1.3.2";
+        List<String> versions = OptifineVersion.generateVersionList("1.6.4");
 
-        if (!currentMcVersion.equals(minecraftVersion)) {
-            OptifabricError.setError(String.format("This version of optifine is not compatible with the current minecraft version\n\n Optifine requires %s you have %s", minecraftVersion, currentMcVersion));
+        if (!versions.contains(minecraftVersion)) {
+            OptifabricError.setError(String.format("This version of optifine is not compatible with the current minecraft version\n\n Optifine requires %s you have %s", minecraftVersion, versions));
             return JarType.INCOMPATIBLE;
         }
 
         return JarType.OPTIFINE_MOD;
+    }
+
+    public static List<String> generateVersionList(String... extremes) {
+        List<String> result = new ArrayList<>();
+        for (String version : extremes) {
+            String[] parts = version.split("\\.");
+            assert parts.length == 3;
+            result.add(parts[0] + "." + parts[1]);
+            for (int i = 1; i <= Integer.parseInt(parts[2]); i++) {
+                result.add(parts[0] + "." + parts[1] + "." + i);
+            }
+        }
+        return result;
     }
 
     public enum JarType {
