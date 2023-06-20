@@ -1,6 +1,6 @@
 plugins {
-	id 'fabric-loom' version "1.1-SNAPSHOT"
-	id 'legacy-looming' version "1.1-SNAPSHOT" // Version must be the same as fabric-loom's
+	id 'fabric-loom' version "1.2-SNAPSHOT"
+	id 'legacy-looming' version "1.2-SNAPSHOT" // Version must be the same as fabric-loom's
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -27,25 +27,20 @@ dependencies {
 	mappings "net.legacyfabric:yarn:$project.yarn_mappings:v2"
 	modImplementation "net.fabricmc:fabric-loader:$project.loader_version"
 
-	modImplementation "com.github.tildejustin:Fabric-ASM:$project.fabric_asm_version"
-	include "com.github.tildejustin:Fabric-ASM:$project.fabric_asm_version"
+	include(modImplementation("com.github.tildejustin:Fabric-ASM:$project.fabric_asm_version"))
 
 	//Used to handle the zip processing
-	implementation "org.zeroturnaround:zt-zip:$project.zt_zip_version"
-	include "org.zeroturnaround:zt-zip:$project.zt_zip_version"
+	include(implementation("org.zeroturnaround:zt-zip:$project.zt_zip_version"))
 
 	//Required for zt-zip, kinda annoying
 	include "org.slf4j:slf4j-simple:$project.slf4j_version"
 	include "org.slf4j:slf4j-api:$project.slf4j_version"
 
-	implementation "org.apache.commons:commons-lang3:$project.commons_lang3_version"
-	include "org.apache.commons:commons-lang3:$project.commons_lang3_version"
+	include(implementation("org.apache.commons:commons-lang3:$project.commons_lang3_version"))
 
-	implementation "commons-io:commons-io:$project.commons_io_version"
-	include "commons-io:commons-io:$project.commons_io_version"
+	include(implementation("commons-io:commons-io:$project.commons_io_version"))
 
-	implementation "commons-codec:commons-codec:$project.commons_codec_version"
-	include "commons-codec:commons-codec:$project.commons_codec_version"
+	include(implementation("commons-codec:commons-codec:$project.commons_codec_version"))
 }
 
 

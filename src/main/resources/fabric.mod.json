@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "optifabric",
   "version": "${version}",
-
   "name": "Optifabric",
   "description": "Optifabric is a mod that loads optifine into fabric",
   "authors": [
@@ -14,7 +13,7 @@
     "homepage": "https://fabricmc.net/",
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
-  "mixins" :[
+  "mixins": [
     "optifabric.mixins.json"
   ],
   "license": "CC0-1.0",

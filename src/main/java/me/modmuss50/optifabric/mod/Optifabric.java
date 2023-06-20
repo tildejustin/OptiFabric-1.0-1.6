@@ -11,40 +11,12 @@ import java.io.*;
 @Environment(EnvType.CLIENT)
 public class Optifabric {
 
-    public static Optifabric.Config config;
     public static final File CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("optifabric.json").toFile();
-
+    public static Optifabric.Config config;
 
     public static void checkForErrors() {
         if (OptifabricError.hasError()) {
             System.out.println("An Optifabric error has occurred");
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public class Config {
-        public boolean alwayRecache;
-        public ClassExcluder[] excluded;
-
-        public Config(Boolean alwaysRecache, ClassExcluder[] excluded) {
-            this.alwayRecache = alwaysRecache;
-            this.excluded = excluded;
-        }
-
-//        public Config(Boolean alwaysRecache) {
-//            this.alwayRecache = alwaysRecache;
-//            this.excludedClasses = null;
-//        }
-    }
-
-    @SuppressWarnings("InnerClassMayBeStatic")
-    public class ClassExcluder {
-        public String version;
-        public String[] classes;
-
-        ClassExcluder(String version, String[] classes) {
-            this.version = version;
-            this.classes = classes;
         }
     }
 
@@ -75,5 +47,32 @@ public class Optifabric {
             throw new RuntimeException(e);
         }
         return gson.fromJson(bufferedReader, Config.class);
+    }
+
+    @SuppressWarnings("unused")
+    public class Config {
+        public boolean alwayRecache;
+        public ClassExcluder[] excluded;
+
+        public Config(Boolean alwaysRecache, ClassExcluder[] excluded) {
+            this.alwayRecache = alwaysRecache;
+            this.excluded = excluded;
+        }
+
+//        public Config(Boolean alwaysRecache) {
+//            this.alwayRecache = alwaysRecache;
+//            this.excludedClasses = null;
+//        }
+    }
+
+    @SuppressWarnings("InnerClassMayBeStatic")
+    public class ClassExcluder {
+        public String version;
+        public String[] classes;
+
+        ClassExcluder(String version, String[] classes) {
+            this.version = version;
+            this.classes = classes;
+        }
     }
 }

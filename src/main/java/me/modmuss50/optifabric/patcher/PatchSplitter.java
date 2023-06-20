@@ -1,8 +1,5 @@
 package me.modmuss50.optifabric.patcher;
 
-import me.modmuss50.optifabric.mod.Optifabric;
-import me.modmuss50.optifabric.mod.OptifineSetup;
-import me.modmuss50.optifabric.mod.OptifineVersion;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.zeroturnaround.zip.ZipUtil;
