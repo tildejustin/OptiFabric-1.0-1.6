@@ -34,7 +34,7 @@ public class Optifabric {
         try {
             if (CONFIG_FILE.createNewFile()) {
                 try (Writer writer = new FileWriter(CONFIG_FILE)) {
-                    gson.toJson(new Config(false, new ClassExcluder[]{}), writer);
+                    gson.toJson(new Config(false, new ClassExcluder[]{new ClassExcluder("OptiFine_1.3.2_L_B2", new String[]{"ik.class", "avc.class"})}), writer);
                 }
             }
         } catch (IOException e) {
@@ -58,11 +58,6 @@ public class Optifabric {
             this.alwayRecache = alwaysRecache;
             this.excluded = excluded;
         }
-
-//        public Config(Boolean alwaysRecache) {
-//            this.alwayRecache = alwaysRecache;
-//            this.excludedClasses = null;
-//        }
     }
 
     @SuppressWarnings("InnerClassMayBeStatic")
