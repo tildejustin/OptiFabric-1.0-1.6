@@ -25,7 +25,7 @@ public class LambdaRebuilder implements IMappingProvider {
 
     }
 
-    public void buildLambadaMap() throws IOException {
+    public void buildLambdaMap() throws IOException {
         Enumeration<JarEntry> entries = optifineJar.entries();
         while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
@@ -39,21 +39,21 @@ public class LambdaRebuilder implements IMappingProvider {
 
     private void buildClassMap(JarEntry jarEntry) throws IOException {
         ClassNode classNode = ASMUtils.asClassNode(jarEntry, optifineJar);
-        List<MethodNode> lambadaNodes = new ArrayList<>();
+        List<MethodNode> lambdaNodes = new ArrayList<>();
         for (MethodNode methodNode : classNode.methods) {
             if (!methodNode.name.startsWith("lambda$") || methodNode.name.startsWith("lambda$static")) {
                 continue;
             }
-            lambadaNodes.add(methodNode);
+            lambdaNodes.add(methodNode);
         }
-        if (lambadaNodes.isEmpty()) {
+        if (lambdaNodes.isEmpty()) {
             return;
         }
         ClassNode minecraftClass = ASMUtils.asClassNode(clientJar.getJarEntry(jarEntry.getName()), clientJar);
         if (!minecraftClass.name.equals(classNode.name)) {
             throw new RuntimeException("Something went wrong");
         }
-        for (MethodNode methodNode : lambadaNodes) {
+        for (MethodNode methodNode : lambdaNodes) {
             MethodNode actualNode = findMethod(methodNode, minecraftClass);
             if (actualNode == null) {
                 continue;

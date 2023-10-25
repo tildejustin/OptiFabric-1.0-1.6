@@ -22,8 +22,6 @@ public class OptifabricSetup implements Runnable {
     public void run() {
         if (!validateMods()) return;
 
-        Optifabric.config = new Optifabric().getConfig();
-
         try {
             OptifineSetup optifineSetup = new OptifineSetup();
             Pair<File, ClassCache> runtime = optifineSetup.getRuntime();

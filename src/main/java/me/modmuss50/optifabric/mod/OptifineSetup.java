@@ -6,8 +6,6 @@ import me.modmuss50.optifabric.patcher.PatchSplitter;
 import me.modmuss50.optifabric.patcher.RemapUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.impl.launch.FabricLauncher;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
 import net.fabricmc.loader.impl.launch.MappingConfiguration;
 import net.fabricmc.loader.impl.util.UrlUtil;
 import net.fabricmc.loader.impl.util.mappings.TinyRemapperMappingsHelper;
@@ -36,8 +34,6 @@ public class OptifineSetup {
 
     private final File workingDir = FabricLoader.getInstance().getGameDir().resolve(".optifine").toFile();
     private final MappingConfiguration mappingConfiguration = new MappingConfiguration();
-    private final FabricLauncher fabricLauncher = FabricLauncherBase.getLauncher();
-    private File versionDir;
 
     private static Path getLaunchMinecraftJar() {
         try {
@@ -71,7 +67,7 @@ public class OptifineSetup {
 
         byte[] modHash = fileHash(optifineModJar);
 
-        versionDir = new File(workingDir, OptifineVersion.version);
+        File versionDir = new File(workingDir, OptifineVersion.version);
         if (!versionDir.exists()) {
             versionDir.mkdirs();
         }
@@ -83,14 +79,14 @@ public class OptifineSetup {
         if (remappedJar.exists() && optifinePatches.exists()) {
             classCache = ClassCache.read(optifinePatches);
             //Validate that the classCache found is for the same input jar
-            if (!Arrays.equals(classCache.getHash(), modHash) || Optifabric.config.alwayRecache) {
+            if (!Arrays.equals(classCache.getHash(), modHash)) {
                 System.out.println("Class cache is from a different optifine jar, deleting and re-generating");
                 classCache = null;
                 optifinePatches.delete();
             }
         }
 
-        if (remappedJar.exists() && classCache != null && !Optifabric.config.alwayRecache) {
+        if (remappedJar.exists() && classCache != null) {
             System.out.println("Found existing patched optifine jar, using that");
             return Pair.of(remappedJar, classCache);
         }
@@ -128,14 +124,10 @@ public class OptifineSetup {
         }
 
         ZipUtil.removeEntries(optifineModJar, srgs.toArray(new String[0]), jarOfTheFree);
-        Optifabric.ClassExcluder classExcluder = Optifabric.getVersionExcluder();
-        if (classExcluder != null) {
-            ZipUtil.removeEntries(optifineModJar, classExcluder.classes, jarOfTheFree);
-        }
 
         System.out.println("Building lambada fix mappings");
         LambdaRebuilder rebuilder = new LambdaRebuilder(jarOfTheFree, getMinecraftJar().toFile());
-        rebuilder.buildLambadaMap();
+        rebuilder.buildLambdaMap();
 
         System.out.println("Remapping optifine with fixed lambada names");
         File lambadaFixJar = new File(versionDir, "/Optifine-lambda-fix.jar");
@@ -154,7 +146,6 @@ public class OptifineSetup {
         extractedMappings.delete();
         fieldMappings.delete();
 
-        // TODO: add this to the json config
         boolean extractClasses = Boolean.parseBoolean(System.getProperty("optifabric.extract", "false"));
         if (extractClasses) {
             System.out.println("Extracting optifine classes");
@@ -180,25 +171,7 @@ public class OptifineSetup {
 
     //Optifine currently has two fields that match the same name as Yarn mappings, we'll rename Optifine's to something else
     IMappingProvider createMappings(@SuppressWarnings("SameParameterValue") String from, String to) {
-        //In dev
-        if (fabricLauncher.isDevelopment()) {
-            try {
-                File fullMappings = extractMappings();
-                return (out) -> {
-                    RemapUtils.getTinyRemapper(fullMappings, from, to).load(out);
-                    //TODO use the mappings API here to stop needing to change this each version
-                    out.acceptField(new IMappingProvider.Member("dbq", "CLOUDS", "Ldbe;"),
-                            "CLOUDS_OF");
-                    out.acceptField(new IMappingProvider.Member("dqr", "renderDistance", "I"),
-                            "renderDistance_OF");
-                };
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        //In prod
-        TinyTree mappingsNew = new TinyTree() {
+        TinyTree mappings = new TinyTree() {
             private final TinyTree mappings = mappingConfiguration.getMappings();
 
             @Override
@@ -216,7 +189,7 @@ public class OptifineSetup {
                 return mappings.getClasses();
             }
         };
-        return TinyRemapperMappingsHelper.create(mappingsNew, from, to);
+        return TinyRemapperMappingsHelper.create(mappings, from, to);
     }
 
     //Gets the minecraft libraries
@@ -265,24 +238,6 @@ public class OptifineSetup {
         }
 
         return minecraftJar;
-    }
-
-    //Extracts the dev-time mappings out of yarn into a file
-    File extractMappings() throws IOException {
-        File extractedMappings = new File(versionDir, "mappings.tiny");
-        if (extractedMappings.exists()) {
-            extractedMappings.delete();
-        }
-        InputStream mappingStream = FabricLauncherBase.class.getClassLoader().getResourceAsStream("mappings/mappings.tiny");
-        if (mappingStream != null) {
-            FileUtils.copyInputStreamToFile(mappingStream, extractedMappings);
-            if (!extractedMappings.exists()) {
-                throw new RuntimeException("failed to extract mappings!");
-            }
-            return extractedMappings;
-        } else {
-            return null;
-        }
     }
 
     byte[] fileHash(File input) throws IOException {
