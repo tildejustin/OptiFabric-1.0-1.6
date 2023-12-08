@@ -1,15 +1,13 @@
 package me.modmuss50.optifabric.mod;
 
 import com.chocohead.mm.api.ClassTinkerers;
+import me.modmuss50.optifabric.Pair;
 import me.modmuss50.optifabric.patcher.ClassCache;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.*;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class OptifabricSetup implements Runnable {
@@ -21,22 +19,21 @@ public class OptifabricSetup implements Runnable {
     @Override
     public void run() {
         if (!validateMods()) return;
-
         try {
             OptifineSetup optifineSetup = new OptifineSetup();
             Pair<File, ClassCache> runtime = optifineSetup.getRuntime();
 
             //Add the optifine jar to the classpath, as
-            ClassTinkerers.addURL(runtime.getLeft().toURI().toURL());
+            ClassTinkerers.addURL(runtime.left().toURI().toURL());
 
-            OptifineInjector injector = new OptifineInjector(runtime.getRight());
+            OptifineInjector injector = new OptifineInjector(runtime.right());
             injector.setup();
 
-            optifineRuntimeJar = runtime.getLeft();
+            optifineRuntimeJar = runtime.left();
         } catch (Throwable e) {
-            if (!OptifabricError.hasError()) {
+            if (!Optifabric.hasError()) {
                 OptifineVersion.jarType = OptifineVersion.JarType.INCOMPATIBLE;
-                OptifabricError.setError("Failed to load optifine, check the log for more info \n\n " + e.getMessage());
+                Optifabric.error = "Failed to load optifine, check the log for more info \n\n " + e.getMessage();
             }
             throw new RuntimeException("Failed to setup optifine", e);
         }
@@ -54,12 +51,9 @@ public class OptifabricSetup implements Runnable {
             OptifineVersion.jarType = OptifineVersion.JarType.INCOMPATIBLE;
             StringBuilder errorMessage = new StringBuilder("One or more mods have stated they are incompatible with Optifabric\nPlease remove Optifabric or the following mods:\n");
             for (ModMetadata metadata : incompatibleMods) {
-                errorMessage.append(metadata.getName())
-                        .append(" (")
-                        .append(metadata.getId())
-                        .append(")\n");
+                errorMessage.append(metadata.getName()).append(" (").append(metadata.getId()).append(")\n");
             }
-            OptifabricError.setError(errorMessage.toString());
+            Optifabric.error = errorMessage.toString();
         }
         return incompatibleMods.isEmpty();
     }

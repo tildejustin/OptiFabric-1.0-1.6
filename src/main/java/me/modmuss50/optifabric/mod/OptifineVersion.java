@@ -2,16 +2,10 @@ package me.modmuss50.optifabric.mod;
 
 import me.modmuss50.optifabric.patcher.ASMUtils;
 import net.fabricmc.loader.api.FabricLoader;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.io.*;
+import java.util.jar.*;
 
 public class OptifineVersion {
 
@@ -42,7 +36,7 @@ public class OptifineVersion {
                     }
                     if (type == JarType.OPTIFINE_MOD) {
                         if (optifineJar != null) {
-                            OptifabricError.setError("Found 2 or more optifine jars, please ensure you only have 1 copy of optifine in the mods folder!");
+                            Optifabric.error = "Found 2 or more optifine jars, please ensure you only have 1 copy of optifine in the mods folder!";
                             throw new FileNotFoundException("Multiple optifine jars");
                         }
                         jarType = type;
@@ -56,7 +50,7 @@ public class OptifineVersion {
             return optifineJar;
         }
 
-        OptifabricError.setError("Optifabric could not find the Optifine jar in the mods folder.");
+        Optifabric.error = "Optifabric could not find the Optifine jar in the mods folder.";
         throw new FileNotFoundException("Could not find optifine jar");
     }
 
@@ -87,27 +81,7 @@ public class OptifineVersion {
             return JarType.INCOMPATIBLE;
         }
 
-        List<String> versions = OptifineVersion.generateVersionList("1.3.2", "1.4.7", "1.5.2");
-
-        if (!versions.contains(minecraftVersion)) {
-            OptifabricError.setError(String.format("This version of optifine is not compatible with the current minecraft version\n\n Optifine requires %s you have %s", minecraftVersion, versions));
-            return JarType.INCOMPATIBLE;
-        }
-
         return JarType.OPTIFINE_MOD;
-    }
-
-    public static List<String> generateVersionList(String... extremes) {
-        List<String> result = new ArrayList<>();
-        for (String version : extremes) {
-            String[] parts = version.split("\\.");
-            assert parts.length == 3;
-            result.add(parts[0] + "." + parts[1]);
-            for (int i = 1; i <= Integer.parseInt(parts[2]); i++) {
-                result.add(parts[0] + "." + parts[1] + "." + i);
-            }
-        }
-        return result;
     }
 
     public enum JarType {

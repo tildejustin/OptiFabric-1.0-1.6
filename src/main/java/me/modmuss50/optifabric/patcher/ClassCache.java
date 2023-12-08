@@ -1,17 +1,11 @@
 package me.modmuss50.optifabric.patcher;
 
-import org.apache.commons.lang3.Validate;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import java.util.*;
+import java.util.zip.*;
 
 public class ClassCache {
-
     private final Map<String, byte[]> classes = new HashMap<>();
     private byte[] hash;
 
@@ -58,7 +52,7 @@ public class ClassCache {
         if (classes.containsKey(name)) {
             throw new UnsupportedOperationException(name + " is already in ClassCache");
         }
-        Validate.notNull(bytes, "bytes cannot be null");
+        Objects.requireNonNull(bytes, "bytes cannot be null");
         classes.put(name, bytes);
     }
 
@@ -115,5 +109,4 @@ public class ClassCache {
         fos.flush();
         fos.close();
     }
-
 }

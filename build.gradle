@@ -1,60 +1,63 @@
 plugins {
-	id "fabric-loom" version "$loom_version"
-	id "legacy-looming" version "$legacy_looming_version"
-	id "maven-publish"
+    alias libs.plugins.fabric.loom
+    alias libs.plugins.legacy.looming
+    id "maven-publish"
 }
 
 version = "$mod_version+$target_version"
 group = maven_group
 
 base {
-	archivesName = archives_name
+    archivesName = archives_name
 }
 
 repositories {
-	maven { url "https://jitpack.io" }
-	flatDir { dirs "libs" }
+    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "https://jitpack.io" }
+}
+
+loom {
+    decompilers {
+        vineflower {
+            options.put("mark-corresponding-synthetics", "1")
+            options.put("ind", "    ")
+        }
+    }
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:$minecraft_version"
-	mappings(legacy.yarn(minecraft_version, yarn_build))
-	modImplementation "net.fabricmc:fabric-loader:$loader_version"
-
-	include(modImplementation "com.github.tildejustin:Fabric-ASM:$fabric_asm_version")
-	include(implementation "org.zeroturnaround:zt-zip:$project.zt_zip_version")
-	include "org.slf4j:slf4j-simple:$slf4j_version"
-	include "org.slf4j:slf4j-api:$slf4j_version"
-	include(implementation "org.apache.commons:commons-lang3:$commons_lang3_version")
-	include(implementation "commons-io:commons-io:$commons_io_version")
-	include(implementation "commons-codec:commons-codec:$commons_codec_version")
+    minecraft libs.minecraft
+    mappings legacy.yarn(libs.versions.minecraft.get(), libs.versions.yarn.build.get())
+    modImplementation libs.fabric.loader
+    vineflowerDecompilerClasspath libs.vineflower
+    include(modImplementation libs.fabric.asm.get())
+    include(implementation libs.zt.zip.get())
+    include(runtimeOnly libs.slf4j.api.get())
 }
 
 processResources {
-	filesMatching("fabric.mod.json") {
-		expand "version": version
-	}
+    filesMatching("fabric.mod.json") {
+        expand "version": version
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.encoding = "UTF-8"
-	it.options.release.set(8)
+    it.options.encoding = "UTF-8"
+    it.options.release.set(8)
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_$base.archivesName" }
-	}
+    from("LICENSE")
 }
 
 publishing {
-	publications.create("mavenJava", MavenPublication) {
-		from components.java
-	}
-	repositories {}
+    publications.create("mavenJava", MavenPublication) {
+        from components.java
+    }
+    repositories {}
 }

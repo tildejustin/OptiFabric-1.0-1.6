@@ -1,33 +1,27 @@
 package me.modmuss50.optifabric.mod;
 
 import com.chocohead.mm.api.ClassTinkerers;
-import me.modmuss50.optifabric.patcher.ASMUtils;
-import me.modmuss50.optifabric.patcher.ClassCache;
+import me.modmuss50.optifabric.patcher.*;
 import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FrameNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class OptifineInjector {
 
     private static final List<String> patched = new ArrayList<>();
     ClassCache classCache;
-    //I have no idea why and how this works, if you know better please let me know
+    // I have no idea why and how this works, if you know better please let me know
     public final Consumer<ClassNode> transformer = target -> {
-
         if (patched.contains(target.name)) {
             System.out.println("Already patched" + target.name);
             return;
         }
         patched.add(target.name);
 
-        //I cannot imagine this being very good at all
+        // I cannot imagine this being very good at all
         ClassNode source = getSourceClassNode(target);
 
         target.methods = source.methods;
@@ -35,7 +29,7 @@ public class OptifineInjector {
         target.interfaces = source.interfaces;
         target.superName = source.superName;
 
-        //Classes should be read with frames expanded (as Mixin itself does it), in which case this should all be fine
+        // Classes should be read with frames expanded (as Mixin itself does it), in which case this should all be fine
         for (MethodNode methodNode : target.methods) {
             for (AbstractInsnNode insnNode : methodNode.instructions.toArray()) {
                 if (insnNode instanceof FrameNode) {

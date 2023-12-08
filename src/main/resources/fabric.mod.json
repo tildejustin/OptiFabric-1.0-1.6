@@ -19,13 +19,13 @@
   "license": "CC0-1.0",
   "icon": "assets/optifabric/icon.png",
   "environment": "client",
-  "custom": {
+  "entrypoints": {
     "mm:early_risers": [
       "me.modmuss50.optifabric.mod.OptifabricSetup"
     ]
   },
   "depends": {
-    "fabricloader": ">=0.12.12",
+    "fabricloader": ">=0.15.0",
     "minecraft": ">=1.3 <1.6"
   },
   "accessWidener": "optifabric.accesswidener"

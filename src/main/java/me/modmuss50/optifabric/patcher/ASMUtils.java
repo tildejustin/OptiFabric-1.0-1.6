@@ -1,20 +1,16 @@
 package me.modmuss50.optifabric.patcher;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.Validate;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.Opcodes;
+import me.modmuss50.optifabric.IOUtils;
+import org.objectweb.asm.*;
 import org.objectweb.asm.tree.ClassNode;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.io.*;
+import java.util.Objects;
+import java.util.jar.*;
 
 public class ASMUtils {
-
     public static ClassNode readClassFromBytes(byte[] bytes) {
-        Validate.notNull(bytes, "Cannot read null bytes");
+        Objects.requireNonNull(bytes, "Cannot read null bytes");
         ClassNode classNode = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);
         classReader.accept(classNode, ClassReader.SKIP_FRAMES);
@@ -30,5 +26,4 @@ public class ASMUtils {
     public static boolean isSynthetic(int flags) {
         return (flags & Opcodes.ACC_SYNTHETIC) != 0;
     }
-
 }

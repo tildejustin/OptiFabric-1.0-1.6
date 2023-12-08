@@ -1,31 +1,16 @@
 package me.modmuss50.optifabric.mod;
 
-import me.modmuss50.optifabric.patcher.ClassCache;
-import me.modmuss50.optifabric.patcher.LambdaRebuilder;
-import me.modmuss50.optifabric.patcher.PatchSplitter;
-import me.modmuss50.optifabric.patcher.RemapUtils;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.impl.launch.MappingConfiguration;
-import net.fabricmc.loader.impl.util.UrlUtil;
+import me.modmuss50.optifabric.*;
+import me.modmuss50.optifabric.patcher.*;
+import net.fabricmc.loader.api.*;
+import net.fabricmc.loader.impl.launch.*;
+import net.fabricmc.loader.impl.lib.tinyremapper.IMappingProvider;
 import net.fabricmc.loader.impl.util.mappings.TinyRemapperMappingsHelper;
-import net.fabricmc.mapping.reader.v2.TinyMetadata;
-import net.fabricmc.mapping.tree.ClassDef;
-import net.fabricmc.mapping.tree.TinyTree;
-import net.fabricmc.tinyremapper.IMappingProvider;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.*;
+import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,7 +50,7 @@ public class OptifineSetup {
         }
         File optifineModJar = OptifineVersion.findOptifineJar();
 
-        byte[] modHash = fileHash(optifineModJar);
+        byte[] modHash = IOUtils.fileHash(optifineModJar);
 
         File versionDir = new File(workingDir, OptifineVersion.version);
         if (!versionDir.exists()) {
@@ -125,33 +110,28 @@ public class OptifineSetup {
 
         ZipUtil.removeEntries(optifineModJar, srgs.toArray(new String[0]), jarOfTheFree);
 
-        System.out.println("Building lambada fix mappings");
-        LambdaRebuilder rebuilder = new LambdaRebuilder(jarOfTheFree, getMinecraftJar().toFile());
+        System.out.println("Building lambda fix mappings");
+        LambdaRebuilder rebuilder = new LambdaRebuilder(jarOfTheFree, this.getMinecraftJar().toFile());
         rebuilder.buildLambdaMap();
 
-        System.out.println("Remapping optifine with fixed lambada names");
-        File lambadaFixJar = new File(versionDir, "/Optifine-lambda-fix.jar");
-        RemapUtils.mapJar(lambadaFixJar.toPath(), jarOfTheFree.toPath(), rebuilder, getLibs());
+        System.out.println("Remapping optifine with fixed lambda names");
+        File lambdaFixJar = new File(versionDir, "optifine-lambda-fix.jar");
+        RemapUtils.mapJar(lambdaFixJar.toPath(), jarOfTheFree.toPath(), rebuilder, this.getLibs());
 
-        remapOptifine(lambadaFixJar.toPath(), remappedJar);
+        this.remapOptifine(lambdaFixJar.toPath(), remappedJar.toPath());
 
         classCache = PatchSplitter.generateClassCache(remappedJar, optifinePatches, modHash);
 
         //We are done, lets get rid of the stuff we no longer need
-        lambadaFixJar.delete();
+        lambdaFixJar.delete();
         jarOfTheFree.delete();
-
-        File extractedMappings = new File(versionDir, "mappings.tiny");
-        File fieldMappings = new File(versionDir, "mappings.full.tiny");
-        extractedMappings.delete();
-        fieldMappings.delete();
 
         boolean extractClasses = Boolean.parseBoolean(System.getProperty("optifabric.extract", "false"));
         if (extractClasses) {
             System.out.println("Extracting optifine classes");
             File optifineClasses = new File(versionDir, "optifine-classes");
             if (optifineClasses.exists()) {
-                FileUtils.deleteDirectory(optifineClasses);
+                IOUtils.deleteDirectory(optifineClasses);
             }
             ZipUtil.unpack(remappedJar, optifineClasses);
         }
@@ -159,43 +139,23 @@ public class OptifineSetup {
         return Pair.of(remappedJar, classCache);
     }
 
-    private void remapOptifine(Path input, File remappedJar) throws Exception {
+    private void remapOptifine(Path input, Path remappedJar) throws Exception {
         String namespace = FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace();
-        System.out.println("Remapping optifine to :" + namespace);
+        System.out.println("Remapping optifine to " + namespace);
 
         List<Path> mcLibs = getLibs();
         mcLibs.add(getMinecraftJar());
 
-        RemapUtils.mapJar(remappedJar.toPath(), input, createMappings("official", namespace), mcLibs);
+        RemapUtils.mapJar(remappedJar, input, createMappings("official", namespace), mcLibs);
     }
 
-    //Optifine currently has two fields that match the same name as Yarn mappings, we'll rename Optifine's to something else
     IMappingProvider createMappings(@SuppressWarnings("SameParameterValue") String from, String to) {
-        TinyTree mappings = new TinyTree() {
-            private final TinyTree mappings = mappingConfiguration.getMappings();
-
-            @Override
-            public TinyMetadata getMetadata() {
-                return mappings.getMetadata();
-            }
-
-            @Override
-            public Map<String, ClassDef> getDefaultNamespaceClassMap() {
-                return mappings.getDefaultNamespaceClassMap();
-            }
-
-            @Override
-            public Collection<ClassDef> getClasses() {
-                return mappings.getClasses();
-            }
-        };
-        return TinyRemapperMappingsHelper.create(mappings, from, to);
+        return TinyRemapperMappingsHelper.create(mappingConfiguration.getMappings(), from, to);
     }
 
     //Gets the minecraft libraries
-    @SuppressWarnings("deprecation")
     List<Path> getLibs() {
-        return net.fabricmc.loader.launch.common.FabricLauncherBase.getLauncher().getLoadTimeDependencies().stream().map(UrlUtil::asPath).filter(Files::exists).collect(Collectors.toList());
+        return FabricLauncherBase.getLauncher().getClassPath().stream().filter(Files::exists).collect(Collectors.toList());
     }
 
     //Gets the official minecraft jar
@@ -238,11 +198,5 @@ public class OptifineSetup {
         }
 
         return minecraftJar;
-    }
-
-    byte[] fileHash(File input) throws IOException {
-        try (InputStream is = Files.newInputStream(input.toPath())) {
-            return DigestUtils.md5(is);
-        }
     }
 }

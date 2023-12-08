@@ -1,18 +1,13 @@
 package me.modmuss50.optifabric.patcher;
 
-import net.fabricmc.tinyremapper.IMappingProvider;
-import net.fabricmc.tinyremapper.MemberInstance;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.MethodNode;
+import net.fabricmc.loader.impl.lib.tinyremapper.*;
+import org.objectweb.asm.tree.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.jar.*;
 
 public class LambdaRebuilder implements IMappingProvider {
-
     private final JarFile optifineJar;
     private final JarFile clientJar;
 

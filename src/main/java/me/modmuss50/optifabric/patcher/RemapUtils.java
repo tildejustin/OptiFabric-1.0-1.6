@@ -1,36 +1,20 @@
 package me.modmuss50.optifabric.patcher;
 
-import net.fabricmc.tinyremapper.IMappingProvider;
-import net.fabricmc.tinyremapper.OutputConsumerPath;
-import net.fabricmc.tinyremapper.TinyRemapper;
-import net.fabricmc.tinyremapper.TinyUtils;
+import net.fabricmc.loader.impl.lib.tinyremapper.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.List;
 
 public class RemapUtils {
-
-    public static IMappingProvider getTinyRemapper(File mappings, String from, String to) {
-        return TinyUtils.createTinyMappingProvider(mappings.toPath(), from, to);
-    }
-
     public static void mapJar(Path output, Path input, IMappingProvider mappings, List<Path> libraries) throws IOException {
         Files.deleteIfExists(output);
-
         TinyRemapper remapper = TinyRemapper.newRemapper().withMappings(mappings).renameInvalidLocals(true).rebuildSourceFilenames(true).build();
-
         try {
-            @SuppressWarnings("deprecation") OutputConsumerPath outputConsumer = new OutputConsumerPath(output);
-            outputConsumer.addNonClassFiles(input);
-            remapper.readInputs(input);
-
-            for (Path path : libraries) {
-                remapper.readClassPath(path);
-            }
-
+            OutputConsumerPath outputConsumer = new OutputConsumerPath.Builder(output).build();
+            outputConsumer.addNonClassFiles(input, NonClassCopyMode.UNCHANGED, remapper);
+            remapper.readInputsAsync(null, input);
+            for (Path path : libraries) remapper.readClassPathAsync(path);
             remapper.apply(outputConsumer);
             outputConsumer.close();
             remapper.finish();
@@ -39,5 +23,4 @@ public class RemapUtils {
             throw new RuntimeException("Failed to remap jar", e);
         }
     }
-
 }
