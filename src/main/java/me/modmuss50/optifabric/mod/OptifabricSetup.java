@@ -11,7 +11,6 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 public class OptifabricSetup implements Runnable {
-
     public static final String OPTIFABRIC_INCOMPATIBLE = "optifabric:incompatible";
     public static File optifineRuntimeJar = null;
 

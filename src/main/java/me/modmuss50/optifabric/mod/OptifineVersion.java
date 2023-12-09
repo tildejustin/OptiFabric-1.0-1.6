@@ -8,8 +8,6 @@ import java.io.*;
 import java.util.jar.*;
 
 public class OptifineVersion {
-
-
     public static String version;
     public static String minecraftVersion;
     public static JarType jarType;
@@ -104,7 +102,5 @@ public class OptifineVersion {
         JarType(boolean error) {
             this.error = error;
         }
-
     }
-
 }

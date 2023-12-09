@@ -10,9 +10,9 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class OptifineInjector {
-
     private static final List<String> patched = new ArrayList<>();
     ClassCache classCache;
+
     // I have no idea why and how this works, if you know better please let me know
     public final Consumer<ClassNode> transformer = target -> {
         if (patched.contains(target.name)) {
@@ -34,9 +34,8 @@ public class OptifineInjector {
             for (AbstractInsnNode insnNode : methodNode.instructions.toArray()) {
                 if (insnNode instanceof FrameNode) {
                     FrameNode frameNode = (FrameNode) insnNode;
-                    if (frameNode.local == null) {
+                    if (frameNode.local == null)
                         throw new IllegalStateException("Null locals in " + frameNode.type + " frame @ " + source.name + "#" + methodNode.name + methodNode.desc);
-                    }
                 }
             }
         }
@@ -54,11 +53,9 @@ public class OptifineInjector {
     }
 
     private static int modAccess(int access) {
-        if ((access & 0x7) != Opcodes.ACC_PRIVATE) {
+        if ((access & 0x7) != Opcodes.ACC_PRIVATE)
             return (access & (~0x7)) | Opcodes.ACC_PUBLIC;
-        } else {
-            return access;
-        }
+        return access;
     }
 
     public void setup() {
@@ -68,9 +65,8 @@ public class OptifineInjector {
     private ClassNode getSourceClassNode(ClassNode classNode) {
         String name = classNode.name.replaceAll("\\.", "/") + ".class";
         byte[] bytes = classCache.getAndRemove(name);
-        if (bytes == null) {
+        if (bytes == null)
             throw new RuntimeException("Failed to find patched class for: " + name);
-        }
         return ASMUtils.readClassFromBytes(bytes);
     }
 }

@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class OptifineSetup {
-
     private final File workingDir = FabricLoader.getInstance().getGameDir().resolve(".optifine").toFile();
     private final MappingConfiguration mappingConfiguration = new MappingConfiguration();
 
