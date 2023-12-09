@@ -1,7 +1,7 @@
 package me.modmuss50.optifabric.mod;
 
 import me.modmuss50.optifabric.patcher.ASMUtils;
-import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.*;
 import org.objectweb.asm.tree.*;
 
 import java.io.*;
@@ -80,6 +80,16 @@ public class OptifineVersion {
         if (version == null || version.isEmpty() || minecraftVersion == null || minecraftVersion.isEmpty()) {
             return JarType.INCOMPATIBLE;
         }
+
+        FabricLoader.getInstance().getModContainer("minecraft").ifPresent(minecraft -> {
+            try {
+                if (!minecraft.getMetadata().getVersion().equals(Version.parse(minecraftVersion))) {
+                    System.err.printf("This version of optifine is not compatible with the current minecraft version\n\n Optifine requires %s, but you have %s", minecraftVersion, version);
+                }
+            } catch (VersionParsingException e) {
+                System.err.println("minecraft version could not be parsed");
+            }
+        });
 
         return JarType.OPTIFINE_MOD;
     }
