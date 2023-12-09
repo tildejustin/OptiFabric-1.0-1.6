@@ -114,7 +114,5 @@ public class OptifineVersion {
         JarType(boolean error) {
             this.error = error;
         }
-
     }
-
 }
