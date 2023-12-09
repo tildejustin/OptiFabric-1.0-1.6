@@ -23,6 +23,7 @@ loom {
             options.put("ind", "    ")
         }
     }
+    accessWidenerPath = file("src/main/resources/optifabric.accesswidener")
 }
 
 dependencies {

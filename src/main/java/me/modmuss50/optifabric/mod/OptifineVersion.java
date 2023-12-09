@@ -1,15 +1,15 @@
 package me.modmuss50.optifabric.mod;
 
 import me.modmuss50.optifabric.patcher.ASMUtils;
-import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.*;
 import org.objectweb.asm.tree.*;
+import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.jar.*;
 
 public class OptifineVersion {
-
-
     public static String version;
     public static String minecraftVersion;
     public static JarType jarType;
@@ -34,7 +34,7 @@ public class OptifineVersion {
                             continue;
                         }
                     }
-                    if (type == JarType.OPTIFINE_MOD) {
+                    if (type == JarType.OPTIFINE_MOD || type == JarType.OPTIFINE_INSTALLER) {
                         if (optifineJar != null) {
                             Optifabric.error = "Found 2 or more optifine jars, please ensure you only have 1 copy of optifine in the mods folder!";
                             throw new FileNotFoundException("Multiple optifine jars");
@@ -81,11 +81,29 @@ public class OptifineVersion {
             return JarType.INCOMPATIBLE;
         }
 
-        return JarType.OPTIFINE_MOD;
+        FabricLoader.getInstance().getModContainer("minecraft").ifPresent(minecraft -> {
+            try {
+                if (!minecraft.getMetadata().getVersion().equals(Version.parse(minecraftVersion))) {
+                    System.err.printf("This version of optifine is not compatible with the current minecraft version\n\n Optifine requires %s, but you have %s", minecraftVersion, version);
+                }
+            } catch (VersionParsingException e) {
+                System.err.println("minecraft version could not be parsed");
+            }
+        });
+
+        AtomicBoolean installer = new AtomicBoolean(false);
+        ZipUtil.iterate(file, (in, zipEntry) -> {
+            if (zipEntry.getName().startsWith("patch/")) {
+                installer.set(true);
+            }
+        });
+
+        return installer.get() ? JarType.OPTIFINE_INSTALLER : JarType.OPTIFINE_MOD;
     }
 
     public enum JarType {
         OPTIFINE_MOD(false),
+        OPTIFINE_INSTALLER(false),
         INCOMPATIBLE(true),
         SOMETHING_ELSE(false);
 
@@ -96,5 +114,4 @@ public class OptifineVersion {
         }
 
     }
-
 }

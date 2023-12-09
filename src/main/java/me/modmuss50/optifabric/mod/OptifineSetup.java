@@ -76,6 +76,14 @@ public class OptifineSetup {
             return Pair.of(remappedJar, classCache);
         }
 
+        if (OptifineVersion.jarType == OptifineVersion.JarType.OPTIFINE_INSTALLER) {
+            File optifineMod = new File(versionDir, "/optifine-mod.jar");
+            if (!optifineMod.exists()) {
+                OptifineInstaller.extract(optifineModJar, optifineMod, getMinecraftJar().toFile());
+            }
+            optifineModJar = optifineMod;
+        }
+
         System.out.println("Setting up optifine for the first time, this may take a few seconds.");
 
         //A jar without srgs
@@ -125,6 +133,7 @@ public class OptifineSetup {
         //We are done, lets get rid of the stuff we no longer need
         lambdaFixJar.delete();
         jarOfTheFree.delete();
+        if (OptifineVersion.jarType == OptifineVersion.JarType.OPTIFINE_INSTALLER) optifineModJar.delete();
 
         boolean extractClasses = Boolean.parseBoolean(System.getProperty("optifabric.extract", "false"));
         if (extractClasses) {
