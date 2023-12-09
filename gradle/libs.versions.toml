@@ -1,8 +1,10 @@
 [versions]
-minecraft = "1.4.2"
-yarn_build = "514"
+minecraft = "1.0.0"
+feather-mappings = "1.0.0-client+build.20"
+nests = "1.0.0-client+build.1"
 fabric-loader = "0.15.1"
-loom = "1.4-SNAPSHOT"
+loom = "1.3-SNAPSHOT"
+loom-vineflower = "1.11.0"
 vineflower = "1.10.0-SNAPSHOT"
 fabric-asm = "299d58f"
 zt-zip = "1.16"
@@ -10,6 +12,8 @@ slf4j-api = "2.0.9"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+feather-mappings = { module = "net.ornithemc:feather", version.ref = "feather-mappings" }
+nests = { module = "net.ornithemc:nests", version.ref = "nests" }
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
 vineflower = { module = "org.vineflower:vineflower", version.ref = "vineflower" }
 fabric-asm = { module = "com.github.tildejustin:Fabric-ASM", version.ref = "fabric-asm" }
@@ -18,4 +22,5 @@ slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
 
 [plugins]
 fabric_loom = { id = "fabric-loom", version.ref = "loom" }
-legacy_looming = { id = "legacy-looming", version.ref = "loom" }
+ploceus = { id = "ploceus", version.ref = "loom" }
+loom-vineflower = { id = "io.github.juuxel.loom-vineflower", version.ref = "loom-vineflower" }

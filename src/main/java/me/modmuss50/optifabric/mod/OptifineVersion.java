@@ -56,31 +56,44 @@ public class OptifineVersion {
 
     private static JarType getJarType(File file) throws IOException {
         ClassNode classNode;
+        JarEntry jarEntry;
         try (JarFile jarFile = new JarFile(file)) {
-            JarEntry jarEntry = jarFile.getJarEntry("Config.class");
+            jarEntry = jarFile.getJarEntry("Config.class");
             if (jarEntry == null) {
                 jarEntry = jarFile.getJarEntry("VersionThread.class");
             }
             System.out.println("jar entry: " + jarEntry);
             if (jarEntry == null) {
+                // 1.1 light has no Config or VersionThread class
+                if (file.getName().endsWith(".zip")) {
+                    version = "unknown";
+                    return JarType.OPTIFINE_MOD;
+                }
                 return JarType.SOMETHING_ELSE;
             }
             classNode = ASMUtils.asClassNode(jarEntry, jarFile);
         }
 
         for (FieldNode fieldNode : classNode.fields) {
-            if (fieldNode.name.equals("VERSION")) {
+            if (fieldNode.name.equals("VERSION") || fieldNode.name.equals("version")) {
                 version = (String) fieldNode.value;
             }
-            if (fieldNode.name.equals("MC_VERSION")) {
-                minecraftVersion = (String) fieldNode.value;
+        }
+
+        if (version == null || version.isEmpty()) {
+            // inlined in getVersion pre 1.2
+            for (MethodNode methodNode : classNode.methods) {
+                if (methodNode.name.equals("getVersion")) {
+                    version = (String) ((LdcInsnNode) methodNode.instructions.get(2)).cst;
+                }
+            }
+
+            if (version == null || version.isEmpty()) {
+                return JarType.INCOMPATIBLE;
             }
         }
 
-        if (version == null || version.isEmpty() || minecraftVersion == null || minecraftVersion.isEmpty()) {
-            return JarType.INCOMPATIBLE;
-        }
-
+        // no version checking because pre 1.2 optifine does not specify a target minecraft
         return JarType.OPTIFINE_MOD;
     }
 
