@@ -5,6 +5,7 @@ import me.modmuss50.optifabric.Pair;
 import me.modmuss50.optifabric.patcher.ClassCache;
 import net.fabricmc.loader.api.*;
 import net.fabricmc.loader.api.metadata.ModMetadata;
+import org.spongepowered.asm.mixin.Mixins;
 
 import java.io.File;
 import java.util.*;
@@ -36,6 +37,7 @@ public class OptifabricSetup implements Runnable {
             }
             throw new RuntimeException("Failed to setup optifine", e);
         }
+        Mixins.addConfiguration("optifabric.optifine.mixins.json");
     }
 
     private boolean validateMods() {
