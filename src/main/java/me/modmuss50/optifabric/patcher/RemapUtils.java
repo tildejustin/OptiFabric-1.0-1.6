@@ -20,7 +20,7 @@ public class RemapUtils {
             remapper.finish();
         } catch (Exception e) {
             remapper.finish();
-            throw new RuntimeException("Failed to remap jar", e);
+            throw new RuntimeException("failed to remap jar", e);
         }
     }
 }

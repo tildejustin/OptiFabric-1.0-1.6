@@ -27,15 +27,15 @@ public class OptifineVersion {
                     JarType type = getJarType(file);
                     if (type.error) {
                         if (!type.equals(JarType.INCOMPATIBLE)) {
-                            throw new RuntimeException("An error occurred when trying to find the optifine jar: " + type.name());
+                            throw new RuntimeException("an error occurred when trying to find the optifine jar: " + type.name());
                         } else {
                             continue;
                         }
                     }
                     if (type == JarType.OPTIFINE_MOD) {
                         if (optifineJar != null) {
-                            Optifabric.error = "Found 2 or more optifine jars, please ensure you only have 1 copy of optifine in the mods folder!";
-                            throw new FileNotFoundException("Multiple optifine jars");
+                            Optifabric.error = "found 2 or more optifine jars, please ensure you only have 1 copy of optifine in the mods folder!";
+                            throw new FileNotFoundException("multiple optifine jars");
                         }
                         jarType = type;
                         optifineJar = file;
@@ -48,8 +48,8 @@ public class OptifineVersion {
             return optifineJar;
         }
 
-        Optifabric.error = "Optifabric could not find the Optifine jar in the mods folder.";
-        throw new FileNotFoundException("Could not find optifine jar");
+        Optifabric.error = "optifabric could not find the optifine jar in the mods folder.";
+        throw new FileNotFoundException("could not find optifine jar");
     }
 
     private static JarType getJarType(File file) throws IOException {
@@ -82,7 +82,7 @@ public class OptifineVersion {
         FabricLoader.getInstance().getModContainer("minecraft").ifPresent(minecraft -> {
             try {
                 if (!minecraft.getMetadata().getVersion().equals(Version.parse(minecraftVersion))) {
-                    System.err.printf("This version of optifine is not compatible with the current minecraft version\n\n Optifine requires %s, but you have %s", minecraftVersion, version);
+                    System.err.printf("this version of optifine is not compatible with the current minecraft version\noptifine requires %s, but you have %s", minecraftVersion, version);
                 }
             } catch (VersionParsingException e) {
                 System.err.println("minecraft version could not be parsed");
