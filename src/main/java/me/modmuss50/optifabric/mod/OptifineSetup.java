@@ -4,8 +4,8 @@ import me.modmuss50.optifabric.*;
 import me.modmuss50.optifabric.patcher.*;
 import net.fabricmc.loader.api.*;
 import net.fabricmc.loader.impl.launch.*;
+import net.fabricmc.loader.impl.lib.mappingio.tree.MappingTree;
 import net.fabricmc.loader.impl.lib.tinyremapper.IMappingProvider;
-import net.fabricmc.loader.impl.util.mappings.TinyRemapperMappingsHelper;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
@@ -148,7 +148,24 @@ public class OptifineSetup {
     }
 
     IMappingProvider createMappings(@SuppressWarnings("SameParameterValue") String from, String to) {
-        return TinyRemapperMappingsHelper.create(mappingConfiguration.getMappings(), from, to);
+        MappingTree tree = FabricLauncherBase.getLauncher().getMappingConfiguration().getMappings();
+        int fromId = tree.getNamespaceId(from);
+        return (out) -> {
+            for (MappingTree.ClassMapping classDef : tree.getClasses()) {
+                String className = classDef.getName(from);
+                out.acceptClass(className, classDef.getName(to));
+
+                for (MappingTree.FieldMapping field : classDef.getFields()) {
+                    out.acceptField(new IMappingProvider.Member(className, field.getName(from), field.getDesc(fromId)), field.getName(to));
+                }
+
+                for (MappingTree.MethodMapping method : classDef.getMethods()) {
+                    // cwv.a(II)Z now overrides ayl.a(II)Z, need to remove the mapping
+                    if ("cwv".equals(className) && "a".equals(method.getName(from)) && "(II)Z".equals(method.getDesc(fromId))) continue;
+                    out.acceptMethod(new IMappingProvider.Member(className, method.getName(from), method.getDesc(fromId)), method.getName(to));
+                }
+            }
+        };
     }
 
     // gets the minecraft libraries

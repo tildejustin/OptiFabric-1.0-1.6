@@ -1,5 +1,5 @@
 [versions]
-minecraft = "1.8.9"
+minecraft = "1.13.2"
 yarn_build = "533"
 fabric-loader = "0.15.1"
 loom = "1.4-SNAPSHOT"

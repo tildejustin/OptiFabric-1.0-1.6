@@ -57,10 +57,7 @@ public class OptifineVersion {
     private static JarType getJarType(File file) throws IOException {
         ClassNode classNode;
         try (JarFile jarFile = new JarFile(file)) {
-            JarEntry jarEntry = jarFile.getJarEntry("Config.class");
-            if (jarEntry == null) {
-                jarEntry = jarFile.getJarEntry("VersionThread.class");
-            }
+            JarEntry jarEntry = jarFile.getJarEntry("net/optifine/Config.class");
             System.out.println("jar entry: " + jarEntry);
             if (jarEntry == null) {
                 return JarType.SOMETHING_ELSE;
