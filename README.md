@@ -1,3 +1,7 @@
+## building
+
+must disable `use --release` in Java Compiler options to be able to access sun.misc.Unsafe during cross-compilation
+
 # OptiFabric
 
 ![](https://ss.modmuss50.me/javaw_2019-05-22_20-33-34.jpg)
