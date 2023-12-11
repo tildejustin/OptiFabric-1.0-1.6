@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class TitleScreenMixin extends Screen {
     @Inject(method = "init", at = @At("RETURN"))
     private void init(CallbackInfo info) {
-        if (Optifabric.hasError()) System.out.println("An Optifabric error has occurred");
+        if (Optifabric.hasError()) System.out.println("an optifabric error has occurred");
     }
 
     @Inject(method = "render", at = @At("RETURN"))

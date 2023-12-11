@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class OptifineSetup {
-
     private final File workingDir = FabricLoader.getInstance().getGameDir().resolve(".optifine").toFile();
     private final MappingConfiguration mappingConfiguration = new MappingConfiguration();
 
@@ -24,14 +23,14 @@ public class OptifineSetup {
         try {
             return (Path) FabricLoader.getInstance().getObjectShare().get("fabric-loader:inputGameJar");
         } catch (NoClassDefFoundError | NoSuchMethodError old) {
-            ModContainer mod = FabricLoader.getInstance().getModContainer("minecraft").orElseThrow(() -> new IllegalStateException("No Minecraft?"));
+            ModContainer mod = FabricLoader.getInstance().getModContainer("minecraft").orElseThrow(() -> new IllegalStateException("no minecraft?"));
             URI uri = mod.getRootPaths().get(0).toUri();
             assert "jar".equals(uri.getScheme());
 
             String path = uri.getSchemeSpecificPart();
             int split = path.lastIndexOf("!/");
 
-            if (path.substring(0, split).indexOf(' ') > 0 && path.startsWith("file:///")) {//This is meant to be a URI...
+            if (path.substring(0, split).indexOf(' ') > 0 && path.startsWith("file:///")) {// this is meant to be a URI...
                 Path out = Paths.get(path.substring(8, split));
                 if (Files.exists(out)) return out;
             }
@@ -39,7 +38,7 @@ public class OptifineSetup {
             try {
                 return Paths.get(new URI(path.substring(0, split)));
             } catch (URISyntaxException e) {
-                throw new RuntimeException("Failed to find Minecraft jar from " + uri + " (calculated " + path.substring(0, split) + ')', e);
+                throw new RuntimeException("failed to find minecraft jar from " + uri + " (calculated " + path.substring(0, split) + ')', e);
             }
         }
     }
@@ -63,16 +62,16 @@ public class OptifineSetup {
         ClassCache classCache = null;
         if (remappedJar.exists() && optifinePatches.exists()) {
             classCache = ClassCache.read(optifinePatches);
-            //Validate that the classCache found is for the same input jar
+            // validate that the classCache found is for the same input jar
             if (!Arrays.equals(classCache.getHash(), modHash)) {
-                System.out.println("Class cache is from a different optifine jar, deleting and re-generating");
+                System.out.println("class cache is from a different optifine jar, deleting and re-generating");
                 classCache = null;
                 optifinePatches.delete();
             }
         }
 
         if (remappedJar.exists() && classCache != null) {
-            System.out.println("Found existing patched optifine jar, using that");
+            System.out.println("found existing patched optifine jar, using that");
             return Pair.of(remappedJar, classCache);
         }
 
@@ -84,45 +83,37 @@ public class OptifineSetup {
             optifineModJar = optifineMod;
         }
 
-        System.out.println("Setting up optifine for the first time, this may take a few seconds.");
+        System.out.println("setting up optifine for the first time, this may take a few seconds.");
 
-        //A jar without srgs
+        // a jar without srgs
         File jarOfTheFree = new File(versionDir, "/optifine-jar-of-the-free.jar");
         List<String> srgs = new ArrayList<>();
 
-        //noinspection SpellCheckingInspection
-        System.out.println("De-Volderfiying jar");
+        System.out.println("removing srg named entries from jar");
 
-        //Find all the SRG named classes and remove them
+        // find all the srg named classes and remove them
         ZipUtil.iterate(optifineModJar, (in, zipEntry) -> {
             String name = zipEntry.getName();
             if (name.startsWith("com/mojang/blaze3d/platform/")) {
                 if (name.contains("$")) {
                     String[] split = name.replace(".class", "").split("\\$");
                     if (split.length >= 2) {
-                        if (split[1].length() > 2) {
-                            srgs.add(name);
-                        }
+                        if (split[1].length() > 2) srgs.add(name);
                     }
                 }
             }
-
-            if (name.startsWith("srg/") || name.startsWith("net/minecraft/")) {
-                srgs.add(name);
-            }
+            if (name.startsWith("srg/") || name.startsWith("net/minecraft/")) srgs.add(name);
         });
 
-        if (jarOfTheFree.exists()) {
-            jarOfTheFree.delete();
-        }
+        if (jarOfTheFree.exists()) jarOfTheFree.delete();
 
         ZipUtil.removeEntries(optifineModJar, srgs.toArray(new String[0]), jarOfTheFree);
 
-        System.out.println("Building lambda fix mappings");
+        System.out.println("building lambda fix mappings");
         LambdaRebuilder rebuilder = new LambdaRebuilder(jarOfTheFree, this.getMinecraftJar().toFile());
         rebuilder.buildLambdaMap();
 
-        System.out.println("Remapping optifine with fixed lambda names");
+        System.out.println("remapping optifine with fixed lambda names");
         File lambdaFixJar = new File(versionDir, "optifine-lambda-fix.jar");
         RemapUtils.mapJar(lambdaFixJar.toPath(), jarOfTheFree.toPath(), rebuilder, this.getLibs());
 
@@ -130,14 +121,14 @@ public class OptifineSetup {
 
         classCache = PatchSplitter.generateClassCache(remappedJar, optifinePatches, modHash);
 
-        //We are done, lets get rid of the stuff we no longer need
+        // we are done, lets get rid of the stuff we no longer need
         lambdaFixJar.delete();
         jarOfTheFree.delete();
         if (OptifineVersion.jarType == OptifineVersion.JarType.OPTIFINE_INSTALLER) optifineModJar.delete();
 
         boolean extractClasses = Boolean.parseBoolean(System.getProperty("optifabric.extract", "false"));
         if (extractClasses) {
-            System.out.println("Extracting optifine classes");
+            System.out.println("extracting optifine classes");
             File optifineClasses = new File(versionDir, "optifine-classes");
             if (optifineClasses.exists()) {
                 IOUtils.deleteDirectory(optifineClasses);
@@ -150,11 +141,9 @@ public class OptifineSetup {
 
     private void remapOptifine(Path input, Path remappedJar) throws Exception {
         String namespace = FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace();
-        System.out.println("Remapping optifine to " + namespace);
-
+        System.out.println("remapping optifine to " + namespace);
         List<Path> mcLibs = getLibs();
         mcLibs.add(getMinecraftJar());
-
         RemapUtils.mapJar(remappedJar, input, createMappings("official", namespace), mcLibs);
     }
 
@@ -162,22 +151,21 @@ public class OptifineSetup {
         return TinyRemapperMappingsHelper.create(mappingConfiguration.getMappings(), from, to);
     }
 
-    //Gets the minecraft libraries
+    // gets the minecraft libraries
     List<Path> getLibs() {
         return FabricLauncherBase.getLauncher().getClassPath().stream().filter(Files::exists).collect(Collectors.toList());
     }
 
-    //Gets the official minecraft jar
+    // gets the official minecraft jar
     @SuppressWarnings("SpellCheckingInspection")
     Path getMinecraftJar() {
         String givenJar = System.getProperty("optifabric.mc-jar");
         if (givenJar != null) {
             File givenJarFile = new File(givenJar);
-
             if (givenJarFile.exists()) {
                 return givenJarFile.toPath();
             } else {
-                System.err.println("Supplied Minecraft jar at " + givenJar + " doesn't exist, falling back");
+                System.err.println("supplied minecraft jar at " + givenJar + " doesn't exist, falling back");
             }
         }
 
@@ -185,27 +173,20 @@ public class OptifineSetup {
 
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
             Path officialNames = minecraftJar.resolveSibling(String.format("minecraft-%s-client.jar", OptifineVersion.minecraftVersion));
-
             if (Files.notExists(officialNames)) {
                 Path parent = minecraftJar.getParent().resolveSibling(String.format("minecraft-%s-client.jar", OptifineVersion.minecraftVersion));
-
                 if (Files.notExists(parent)) {
                     Path alternativeParent = parent.resolveSibling("minecraft-client.jar");
-
                     if (Files.notExists(alternativeParent)) {
-                        throw new AssertionError("Unable to find Minecraft dev jar! Tried " + officialNames + ", " + parent + " and " + alternativeParent
-                                + "\nPlease supply it explicitly with -Doptifabric.mc-jar");
+                        throw new AssertionError("unable to find minecraft dev jar! tried " + officialNames + ", " + parent + " and " + alternativeParent
+                                + "\nplease supply it explicitly with -Doptifabric.mc-jar");
                     }
-
                     parent = alternativeParent;
                 }
-
                 officialNames = parent;
             }
-
             minecraftJar = officialNames;
         }
-
         return minecraftJar;
     }
 }

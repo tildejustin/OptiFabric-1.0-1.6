@@ -23,7 +23,7 @@ public class ClassCache {
 
         ClassCache classCache = new ClassCache();
 
-        //Read the hash
+        // read the hash
         int hashSize = dis.readInt();
         byte[] hash = new byte[hashSize];
         dis.readFully(hash);
@@ -76,29 +76,28 @@ public class ClassCache {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void save(File output) throws IOException {
-        if (output.exists()) {
-            output.delete();
-        }
+        if (output.exists()) output.delete();
+
         FileOutputStream fos = new FileOutputStream(output);
         GZIPOutputStream gos = new GZIPOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(gos);
 
-        //Write the hash
+        // write the hash
         dos.writeInt(hash.length);
         dos.write(hash);
 
-        //Write the number of classes
+        // write the number of classes
         dos.writeInt(classes.size());
         for (Map.Entry<String, byte[]> clazz : classes.entrySet()) {
             String name = clazz.getKey();
             byte[] nameBytes = name.getBytes(StandardCharsets.UTF_8);
             byte[] bytes = clazz.getValue();
 
-            //Write the name
+            // write the name
             dos.writeInt(nameBytes.length);
             dos.write(nameBytes);
 
-            //Write the actual bytes
+            // write the actual bytes
             dos.writeInt(bytes.length);
             dos.write(bytes);
         }

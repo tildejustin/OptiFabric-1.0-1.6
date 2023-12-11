@@ -14,7 +14,7 @@ public class OptifabricSetup implements Runnable {
     public static final String OPTIFABRIC_INCOMPATIBLE = "optifabric:incompatible";
     public static File optifineRuntimeJar = null;
 
-    //This is called early on to allow us to get the transformers in before minecraft starts
+    // this is called early on to allow us to get the transformers in before minecraft starts
     @Override
     public void run() {
         if (!validateMods()) return;
@@ -22,7 +22,7 @@ public class OptifabricSetup implements Runnable {
             OptifineSetup optifineSetup = new OptifineSetup();
             Pair<File, ClassCache> runtime = optifineSetup.getRuntime();
 
-            //Add the optifine jar to the classpath, as
+            // add the optifine jar to the classpath, as
             ClassTinkerers.addURL(runtime.left().toURI().toURL());
 
             OptifineInjector injector = new OptifineInjector(runtime.right());
@@ -48,7 +48,7 @@ public class OptifabricSetup implements Runnable {
         }
         if (!incompatibleMods.isEmpty()) {
             OptifineVersion.jarType = OptifineVersion.JarType.INCOMPATIBLE;
-            StringBuilder errorMessage = new StringBuilder("One or more mods have stated they are incompatible with Optifabric\nPlease remove Optifabric or the following mods:\n");
+            StringBuilder errorMessage = new StringBuilder("one or more mods have stated they are incompatible with optifabric\nplease remove optifabric or the following mods:\n");
             for (ModMetadata metadata : incompatibleMods) {
                 errorMessage.append(metadata.getName()).append(" (").append(metadata.getId()).append(")\n");
             }
