@@ -63,18 +63,16 @@ public class LambdaRebuilder implements IMappingProvider {
     }
 
     private MethodNode findMethod(MethodNode optifineMethod, ClassNode minecraftClass) {
-        {
-            MethodNode lastNode = null;
-            int identicalMethods = 0;
-            for (MethodNode methodNode : minecraftClass.methods) {
-                if (ASMUtils.isSynthetic(methodNode.access) && methodNode.desc.equals(optifineMethod.desc)) {
-                    identicalMethods++;
-                    lastNode = methodNode;
-                }
+        MethodNode lastNode = null;
+        int identicalMethods = 0;
+        for (MethodNode methodNode : minecraftClass.methods) {
+            if (ASMUtils.isSynthetic(methodNode.access) && methodNode.desc.equals(optifineMethod.desc)) {
+                identicalMethods++;
+                lastNode = methodNode;
             }
-            if (identicalMethods == 1) {
-                return lastNode;
-            }
+        }
+        if (identicalMethods == 1) {
+            return lastNode;
         }
         return null;
     }
