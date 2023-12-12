@@ -17,7 +17,6 @@ public class LambdaRebuilder implements IMappingProvider {
     public LambdaRebuilder(File optifineFile, File minecraftClientFile) throws IOException {
         optifineJar = new JarFile(optifineFile);
         clientJar = new JarFile(minecraftClientFile);
-
     }
 
     public void buildLambdaMap() throws IOException {
