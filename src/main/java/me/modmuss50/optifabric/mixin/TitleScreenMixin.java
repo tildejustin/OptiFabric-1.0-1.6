@@ -1,7 +1,7 @@
 package me.modmuss50.optifabric.mixin;
 
 import me.modmuss50.optifabric.mod.*;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
@@ -16,6 +16,6 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At("RETURN"))
     private void render(CallbackInfo ci) {
-        if (!Optifabric.hasError()) this.drawWithShadow(MinecraftClient.getInstance().textRenderer, OptifineVersion.version, 2, this.height - 20, 0xFFFFFFFF);
+        if (!Optifabric.hasError()) this.drawString(Minecraft.getInstance().textRenderer, OptifineVersion.version, 2, this.height - 20, 0xFFFFFFFF);
     }
 }
