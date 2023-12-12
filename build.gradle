@@ -1,6 +1,6 @@
 plugins {
     alias libs.plugins.fabric.loom
-    alias libs.plugins.legacy.looming
+    alias libs.plugins.ploceus
     id "maven-publish"
 }
 
@@ -12,25 +12,13 @@ base {
 }
 
 repositories {
-    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots" }
     maven { url "https://jitpack.io" }
-}
-
-loom {
-    decompilers {
-        vineflower {
-            options.put("mark-corresponding-synthetics", "1")
-            options.put("ind", "    ")
-        }
-    }
-    accessWidenerPath = file("src/main/resources/optifabric.accesswidener")
 }
 
 dependencies {
     minecraft libs.minecraft
-    mappings legacy.yarn(libs.versions.minecraft.get(), libs.versions.yarn.build.get())
+    mappings variantOf(libs.feather.mappings) { classifier "v2" }
     modImplementation libs.fabric.loader
-    vineflowerDecompilerClasspath libs.vineflower
     include(modImplementation libs.fabric.asm.get())
     include(implementation libs.zt.zip.get())
     include(runtimeOnly libs.slf4j.api.get())
