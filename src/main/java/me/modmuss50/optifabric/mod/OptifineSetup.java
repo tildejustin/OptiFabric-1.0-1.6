@@ -3,9 +3,9 @@ package me.modmuss50.optifabric.mod;
 import me.modmuss50.optifabric.*;
 import me.modmuss50.optifabric.patcher.*;
 import net.fabricmc.loader.api.*;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.mappingio.tree.MappingTree;
-import net.fabricmc.tinyremapper.IMappingProvider;
+import net.fabricmc.loader.impl.launch.*;
+import net.fabricmc.loader.impl.lib.mappingio.tree.MappingTree;
+import net.fabricmc.loader.impl.lib.tinyremapper.IMappingProvider;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class OptifineSetup {
     private final File workingDir = FabricLoader.getInstance().getGameDir().resolve(".optifine").toFile();
+    private final MappingConfiguration mappingConfiguration = new MappingConfiguration();
 
     private static Path getLaunchMinecraftJar() {
         try {
@@ -147,20 +148,21 @@ public class OptifineSetup {
     }
 
     IMappingProvider createMappings(@SuppressWarnings("SameParameterValue") String from, String to) {
-        MappingTree tree = (MappingTree) FabricLauncherBase.getLauncher().getMappingConfiguration().getMappings();
+        MappingTree tree = FabricLauncherBase.getLauncher().getMappingConfiguration().getMappings();
+        int fromId = tree.getNamespaceId(from);
         return (out) -> {
             for (MappingTree.ClassMapping classDef : tree.getClasses()) {
                 String className = classDef.getName(from);
                 out.acceptClass(className, classDef.getName(to));
 
                 for (MappingTree.FieldMapping field : classDef.getFields()) {
-                    out.acceptField(new IMappingProvider.Member(className, field.getName(from), field.getDesc(from)), field.getName(to));
+                    out.acceptField(new IMappingProvider.Member(className, field.getName(from), field.getDesc(fromId)), field.getName(to));
                 }
 
                 for (MappingTree.MethodMapping method : classDef.getMethods()) {
                     // cwv.a(II)Z now overrides ayl.a(II)Z, need to remove the mapping
-                    if ("cwv".equals(className) && "a".equals(method.getName(from)) && "(II)Z".equals(method.getDesc(from))) continue;
-                    out.acceptMethod(new IMappingProvider.Member(className, method.getName(from), method.getDesc(from)), method.getName(to));
+                    if ("cwv".equals(className) && "a".equals(method.getName(from)) && "(II)Z".equals(method.getDesc(fromId))) continue;
+                    out.acceptMethod(new IMappingProvider.Member(className, method.getName(from), method.getDesc(fromId)), method.getName(to));
                 }
             }
         };

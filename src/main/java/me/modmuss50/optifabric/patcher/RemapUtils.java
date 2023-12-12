@@ -1,7 +1,6 @@
 package me.modmuss50.optifabric.patcher;
 
-
-import net.fabricmc.tinyremapper.*;
+import net.fabricmc.loader.impl.lib.tinyremapper.*;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -14,7 +13,7 @@ public class RemapUtils {
         try {
             OutputConsumerPath outputConsumer = new OutputConsumerPath.Builder(output).build();
             outputConsumer.addNonClassFiles(input, NonClassCopyMode.UNCHANGED, remapper);
-            remapper.readInputsAsync(input);
+            remapper.readInputsAsync(null, input);
             for (Path path : libraries) remapper.readClassPathAsync(path);
             remapper.apply(outputConsumer);
             outputConsumer.close();

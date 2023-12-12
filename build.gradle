@@ -22,8 +22,6 @@ dependencies {
     include(modImplementation libs.fabric.asm.get())
     include(implementation libs.zt.zip.get())
     include(runtimeOnly libs.slf4j.api.get())
-    include(implementation libs.tiny.remapper.get())
-    include(implementation libs.mapping.io.get())
 }
 
 processResources {
