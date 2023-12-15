@@ -22,15 +22,14 @@
   "entrypoints": {
     "main": [
       "me.modmuss50.optifabric.mod.Optifabric"
-    ]
-  },
-  "custom": {
-    "fabric-renderer-indigo:force_compatibility" : true,
+    ],
     "mm:early_risers": [
       "me.modmuss50.optifabric.mod.OptifabricSetup"
     ]
   },
+  "custom": {
+    "fabric-renderer-indigo:force_compatibility" : true
+  },
   "depends": {
-    "fabricloader": ">=0.9.0"
   }
 }
