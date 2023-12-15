@@ -22,16 +22,14 @@
   "entrypoints": {
     "main": [
       "me.modmuss50.optifabric.mod.Optifabric"
-    ]
-  },
-  "custom": {
-    "fabric-renderer-api-v1:contains_renderer" : true,
+    ],
     "mm:early_risers": [
       "me.modmuss50.optifabric.mod.OptifabricSetup"
     ]
   },
+  "custom": {
+    "fabric-renderer-api-v1:contains_renderer": true
+  },
   "depends": {
-    "fabricloader": ">=0.9.0",
-    "minecraft": "1.15.2"
   }
 }
