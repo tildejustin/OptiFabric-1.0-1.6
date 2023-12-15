@@ -7,12 +7,9 @@ import me.modmuss50.optifabric.util.RemapUtils;
 import me.modmuss50.optifabric.util.ZipUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.launch.common.FabricLauncherBase;
-import net.fabricmc.mapping.tree.ClassDef;
-import net.fabricmc.mapping.tree.FieldDef;
-import net.fabricmc.mapping.tree.MethodDef;
-import net.fabricmc.mapping.tree.TinyTree;
-import net.fabricmc.tinyremapper.IMappingProvider;
+import net.fabricmc.loader.impl.launch.FabricLauncherBase;
+import net.fabricmc.loader.impl.lib.mappingio.tree.MappingTree;
+import net.fabricmc.loader.impl.lib.tinyremapper.IMappingProvider;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -149,7 +146,7 @@ public class OptifineSetup {
 
 	//Optifine currently has two fields that match the same name as Yarn mappings, we'll rename Optifine's to something else
 	IMappingProvider createMappings(String from, String to) {
-		TinyTree normalMappings = FabricLauncherBase.getLauncher().getMappingConfiguration().getMappings();
+		MappingTree normalMappings = FabricLauncherBase.getLauncher().getMappingConfiguration().getMappings();
 
 		//In dev
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
@@ -168,17 +165,18 @@ public class OptifineSetup {
 		}
 
 		//In prod
+		int fromId = normalMappings.getNamespaceId(from);
 		return (out) -> {
-			for (ClassDef classDef : normalMappings.getClasses()) {
+			for (MappingTree.ClassMapping classDef : normalMappings.getClasses()) {
 				String className = classDef.getName(from);
 				out.acceptClass(className, classDef.getName(to));
 
-				for (FieldDef field : classDef.getFields()) {
-					out.acceptField(new IMappingProvider.Member(className, field.getName(from), field.getDescriptor(from)), field.getName(to));
+				for (MappingTree.FieldMapping field : classDef.getFields()) {
+					out.acceptField(new IMappingProvider.Member(className, field.getName(from), field.getDesc(fromId)), field.getName(to));
 				}
 
-				for (MethodDef method : classDef.getMethods()) {
-					out.acceptMethod(new IMappingProvider.Member(className, method.getName(from), method.getDescriptor(from)), method.getName(to));
+				for (MappingTree.MethodMapping method : classDef.getMethods()) {
+					out.acceptMethod(new IMappingProvider.Member(className, method.getName(from), method.getDesc(fromId)), method.getName(to));
 				}
 			}
 		};
@@ -186,13 +184,7 @@ public class OptifineSetup {
 
 	//Gets the minecraft librarys
 	private static List<Path> getLibs() {
-		Path[] libs = FabricLauncherBase.getLauncher().getLoadTimeDependencies().stream().map(url -> {
-			try {
-				return Paths.get(url.toURI());
-			} catch (URISyntaxException e) {
-				throw new RuntimeException("Failed to convert " + url + " to path", e);
-			}
-		}).filter(Files::exists).toArray(Path[]::new);
+		Path[] libs = FabricLauncherBase.getLauncher().getClassPath().stream().filter(Files::exists).toArray(Path[]::new);
 
 		out: if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			Path launchJar = getLaunchMinecraftJar();
@@ -226,32 +218,7 @@ public class OptifineSetup {
 			}
 		}
 
-		Path minecraftJar = getLaunchMinecraftJar();
-
-		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-			Path officialNames = minecraftJar.resolveSibling(String.format("minecraft-%s-client.jar", OptifineVersion.minecraftVersion));
-
-			if (Files.notExists(officialNames)) {
-				Path parent = minecraftJar.getParent().resolveSibling(String.format("minecraft-%s-client.jar", OptifineVersion.minecraftVersion));
-
-				if (Files.notExists(parent)) {
-					Path alternativeParent = parent.resolveSibling("minecraft-client.jar");
-
-					if (Files.notExists(alternativeParent)) {
-						throw new AssertionError("Unable to find Minecraft dev jar! Tried " + officialNames + ", " + parent + " and " + alternativeParent
-								+ "\nPlease supply it explicitly with -Doptifabric.mc-jar");
-					}
-
-					parent = alternativeParent;
-				}
-
-				officialNames = parent;
-			}
-
-			minecraftJar = officialNames;
-		}
-
-		return minecraftJar;
+        return getLaunchMinecraftJar();
 	}
 
 	private static Path getLaunchMinecraftJar() {
@@ -259,7 +226,7 @@ public class OptifineSetup {
 			return (Path) FabricLoader.getInstance().getObjectShare().get("fabric-loader:inputGameJar");
 		} catch (NoClassDefFoundError | NoSuchMethodError old) {
 			ModContainer mod = FabricLoader.getInstance().getModContainer("minecraft").orElseThrow(() -> new IllegalStateException("No Minecraft?"));
-			URI uri = mod.getRootPath().toUri();
+			URI uri = mod.getRootPaths().getFirst().toUri();
 			assert "jar".equals(uri.getScheme());
 
 			String path = uri.getSchemeSpecificPart();

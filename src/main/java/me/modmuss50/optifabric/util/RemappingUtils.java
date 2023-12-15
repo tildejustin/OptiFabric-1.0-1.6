@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
-import net.fabricmc.tinyremapper.IMappingProvider.Member;
+import net.fabricmc.loader.impl.lib.tinyremapper.IMappingProvider;
 
 public class RemappingUtils {
 
@@ -21,8 +21,8 @@ public class RemappingUtils {
         return RESOLVER.mapClassName(INTERMEDIARY, "net.minecraft." + className);
     }
 
-    public static Member mapMethod(String owner, String name, String desc) {
-        return new Member(getClassName(owner), getMethodName(owner, name, desc), mapMethodDescriptor(desc));
+    public static IMappingProvider.Member mapMethod(String owner, String name, String desc) {
+        return new IMappingProvider.Member(getClassName(owner), getMethodName(owner, name, desc), mapMethodDescriptor(desc));
     }
 
     public static String getMethodName(String owner, String methodName, String desc) {
