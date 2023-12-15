@@ -21,7 +21,7 @@ public class OptifineVersion {
 	public static JarType jarType;
 
 	public static File findOptifineJar() throws IOException {
-		File modsDir = new File(FabricLoader.getInstance().getGameDirectory(), "mods");
+		File modsDir = new File(FabricLoader.getInstance().getGameDir().toFile(), "mods");
 		File[] mods = modsDir.listFiles();
 
 		File optifineJar = null;
