@@ -1,7 +1,7 @@
 [versions]
 minecraft = "1.13.2"
 feather-mappings = "1.13.2+build.25"
-fabric-loader = "0.15.1"
+fabric-loader = "0.15.2"
 loom = "1.4-SNAPSHOT"
 fabric-asm = "v2.3.3"
 zt-zip = "1.16"
