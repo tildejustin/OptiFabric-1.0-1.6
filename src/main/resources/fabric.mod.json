@@ -29,7 +29,7 @@
   },
   "depends": {
     "fabricloader": ">=0.15.0",
-    "minecraft": ">=1.8"
+    "minecraft": ">=1.13 <1.14"
   },
   "accessWidener": "optifabric.accesswidener"
 }
