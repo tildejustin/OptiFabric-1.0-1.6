@@ -1,37 +1,18 @@
 package me.modmuss50.optifabric.mod;
 
-import me.modmuss50.optifabric.IOUtils;
-import me.modmuss50.optifabric.Pair;
-import me.modmuss50.optifabric.metadata.OptifineIcon;
-import me.modmuss50.optifabric.patcher.ClassCache;
-import me.modmuss50.optifabric.patcher.LambdaRebuilder;
-import me.modmuss50.optifabric.patcher.PatchSplitter;
-import me.modmuss50.optifabric.patcher.RemapUtils;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.launch.MappingConfiguration;
+import me.modmuss50.optifabric.*;
+import me.modmuss50.optifabric.patcher.*;
+import net.fabricmc.loader.api.*;
+import net.fabricmc.loader.impl.launch.*;
 import net.fabricmc.loader.impl.lib.tinyremapper.IMappingProvider;
 import net.fabricmc.loader.impl.util.mappings.TinyRemapperMappingsHelper;
 import org.zeroturnaround.zip.ZipUtil;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import java.net.*;
+import java.nio.file.*;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class OptifineSetup {
@@ -60,41 +41,6 @@ public class OptifineSetup {
                 throw new RuntimeException("failed to find minecraft jar from " + uri + " (calculated " + path.substring(0, split) + ')', e);
             }
         }
-    }
-
-    private static void addIcon(File zipFile) {
-        File tempFile;
-        tempFile = new File(zipFile.getName().replace(".jar", ".tmp"));
-        tempFile.delete();
-
-        boolean renameOk = zipFile.renameTo(tempFile);
-        if (!renameOk)
-            throw new RuntimeException("Could not rename the file " + zipFile.getAbsolutePath() + " to " + tempFile.getAbsolutePath());
-        byte[] buf = new byte[1024];
-
-        try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zipFile.toPath()))) {
-            try (ZipInputStream zin = new ZipInputStream(Files.newInputStream(tempFile.toPath()))) {
-                ZipEntry entry = zin.getNextEntry();
-                while (entry != null) {
-                    String name = entry.getName();
-                    out.putNextEntry(new ZipEntry(name));
-                    int len;
-                    while ((len = zin.read(buf)) > 0)
-                        out.write(buf, 0, len);
-                    entry = zin.getNextEntry();
-                }
-            }
-            try (InputStream in = new ByteArrayInputStream(Base64.getDecoder().decode(OptifineIcon.DATA))) {
-                out.putNextEntry(new ZipEntry("assets/optifine/icon.png"));
-                int len;
-                while ((len = in.read(buf)) > 0)
-                    out.write(buf, 0, len);
-                out.closeEntry();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        tempFile.delete();
     }
 
     public Pair<File, ClassCache> getRuntime() throws Throwable {
@@ -164,7 +110,6 @@ public class OptifineSetup {
         RemapUtils.mapJar(lambdaFixJar.toPath(), jarOfTheFree.toPath(), rebuilder, this.getLibs());
 
         this.remapOptifine(lambdaFixJar.toPath(), remappedJar.toPath());
-        OptifineSetup.addIcon(remappedJar);
 
         classCache = PatchSplitter.generateClassCache(remappedJar, optifinePatches, modHash);
 

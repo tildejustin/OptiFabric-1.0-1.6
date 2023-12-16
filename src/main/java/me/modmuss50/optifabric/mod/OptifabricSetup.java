@@ -2,11 +2,9 @@ package me.modmuss50.optifabric.mod;
 
 import com.chocohead.mm.api.ClassTinkerers;
 import me.modmuss50.optifabric.Pair;
-import me.modmuss50.optifabric.metadata.OptifineContainer;
 import me.modmuss50.optifabric.patcher.ClassCache;
 import net.fabricmc.loader.api.*;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
 
 import java.io.File;
 import java.util.*;
@@ -31,13 +29,6 @@ public class OptifabricSetup implements Runnable {
             injector.setup();
 
             optifineRuntimeJar = runtime.left();
-
-            try {
-                //noinspection unchecked
-                ((List<ModContainer>) (List<? extends ModContainer>) FabricLoaderImpl.InitHelper.get().getModsInternal()).add(new OptifineContainer(runtime.left().toPath(), Version.parse(OptifineVersion.version)));
-            } catch (VersionParsingException e) {
-                throw new RuntimeException(e);
-            }
         } catch (Throwable e) {
             if (!Optifabric.hasError()) {
                 OptifineVersion.jarType = OptifineVersion.JarType.INCOMPATIBLE;
