@@ -11,7 +11,8 @@
   ],
   "contact": {
     "homepage": "https://modrinth.com/mod/legacy-optifabric",
-    "sources": "https://github.com/tildejustin/optifabric"
+    "sources": "https://github.com/tildejustin/optifabric",
+    "issues": "https://github.com/tildejustin/optifabric/issues"
   },
   "mixins": [
     "optifabric.mixins.json"
