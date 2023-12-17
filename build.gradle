@@ -15,6 +15,10 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/optifabric.accesswidener")
+}
+
 dependencies {
     minecraft libs.minecraft
     mappings variantOf(libs.feather.mappings) { classifier "v2" }
