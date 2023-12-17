@@ -42,7 +42,6 @@ public class OptifineInjector {
         }
 
         // let's make every class we touch public
-        // is this necessary ? I don 't think so
         if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
             target.access = modAccess(target.access);
             target.methods.forEach(methodNode -> methodNode.access = modAccess(methodNode.access));
