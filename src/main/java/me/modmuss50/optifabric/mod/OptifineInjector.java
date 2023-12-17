@@ -1,18 +1,18 @@
 package me.modmuss50.optifabric.mod;
 
-import com.chocohead.mm.api.ClassTinkerers;
+import com.chocohead.mm.api.*;
 import me.modmuss50.optifabric.patcher.*;
-import org.objectweb.asm.Opcodes;
+import net.fabricmc.loader.api.*;
+import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.function.*;
 
 public class OptifineInjector {
     private static final List<String> patched = new ArrayList<>();
     ClassCache classCache;
     // i have no idea why and how this works, if you know better please let me know
-    @SuppressWarnings("CommentedOutCode")
     public final Consumer<ClassNode> transformer = target -> {
         if (patched.contains(target.name)) {
             System.out.println("Already patched" + target.name);
@@ -40,12 +40,11 @@ public class OptifineInjector {
         }
 
         // let's make every class we touch public
-        // is this necessary? I don't think so
-        // if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
-        //     target.access = modAccess(target.access);
-        //     target.methods.forEach(methodNode -> methodNode.access = modAccess(methodNode.access));
-        //     target.fields.forEach(fieldNode -> fieldNode.access = modAccess(fieldNode.access));
-        // }
+        if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            target.access = modAccess(target.access);
+            target.methods.forEach(methodNode -> methodNode.access = modAccess(methodNode.access));
+            target.fields.forEach(fieldNode -> fieldNode.access = modAccess(fieldNode.access));
+        }
     };
 
     public OptifineInjector(ClassCache classCache) {

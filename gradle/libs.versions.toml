@@ -3,7 +3,6 @@ minecraft = "1.4.2"
 yarn_build = "514"
 fabric-loader = "0.15.2"
 loom = "1.4-SNAPSHOT"
-vineflower = "1.10.0-SNAPSHOT"
 fabric-asm = "v2.3.3"
 zt-zip = "1.16"
 slf4j-api = "2.0.9"
@@ -11,7 +10,6 @@ slf4j-api = "2.0.9"
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
-vineflower = { module = "org.vineflower:vineflower", version.ref = "vineflower" }
 fabric-asm = { module = "com.github.Minecraft-Java-Edition-Speedrunning:fabric-asm", version.ref = "fabric-asm" }
 zt-zip = { module = "org.zeroturnaround:zt-zip", version.ref = "zt-zip" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
