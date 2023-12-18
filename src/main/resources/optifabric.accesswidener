@@ -3,3 +3,4 @@ accessible field net/minecraft/client/gui/widget/ButtonWidget width I
 accessible field net/minecraft/client/gui/widget/ButtonWidget height I
 accessible method net/minecraft/locale/LanguageManager getInstance ()Lnet/minecraft/locale/LanguageManager;
 accessible method net/minecraft/block/Block setOpacity (I)Lnet/minecraft/block/Block;
+accessible field net/minecraft/client/resource/pack/AbstractTexturePack file Ljava/io/File;
