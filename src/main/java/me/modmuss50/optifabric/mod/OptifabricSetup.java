@@ -3,25 +3,62 @@ package me.modmuss50.optifabric.mod;
 import com.chocohead.mm.api.ClassTinkerers;
 import me.modmuss50.optifabric.Pair;
 import me.modmuss50.optifabric.patcher.ClassCache;
-import net.optifine.util.AddOpens;
 import net.fabricmc.loader.api.*;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import org.spongepowered.asm.mixin.Mixins;
 import org.spongepowered.asm.util.JavaVersion;
 
 import java.io.File;
+import java.lang.invoke.*;
+import java.lang.reflect.*;
 import java.util.*;
 
 @SuppressWarnings("unused")
 public class OptifabricSetup implements Runnable {
     public static final String OPTIFABRIC_INCOMPATIBLE = "optifabric:incompatible";
     public static File optifineRuntimeJar = null;
+    public static MethodHandle magic;
+
+    public static void addOpens(final Object from, final String packageName, final Object to) {
+        try {
+            OptifabricSetup.magic.invokeExact((Object) ExportHelper.class, (Object) from);
+        } catch (final Throwable t) {
+            throw new RuntimeException(t);
+        }
+        ExportHelper.addOpens(packageName, to);
+    }
 
     // this is called early on to allow us to get the transformers in before minecraft starts
     @Override
     public void run() {
         if (!validateMods()) return;
-        if (JavaVersion.current() >= JavaVersion.JAVA_9) AddOpens.open("java.base", "jdk.internal.misc", "sun.misc");
+        if (JavaVersion.current() >= JavaVersion.JAVA_9) {
+            try {
+                Method getModule = Class.class.getDeclaredMethod("getModule");
+                Object thisModule = getModule.invoke(this.getClass());
+
+                Class<?> Unsafe = Class.forName("sun.misc.Unsafe");
+                Field theUnsafeField = Unsafe.getDeclaredField("theUnsafe");
+                theUnsafeField.setAccessible(true);
+                Object theUnsafe = theUnsafeField.get(null);
+                Field UnsafeModuleField = Class.class.getDeclaredField("module");
+                Method objectFieldOffset = Unsafe.getDeclaredMethod("objectFieldOffset", Field.class);
+                final long offset = (long) objectFieldOffset.invoke(theUnsafe, UnsafeModuleField);
+                // I have no idea
+                magic = MethodHandles.insertArguments(
+                        MethodHandles.lookup().bind(theUnsafe, "putObject",
+                                MethodType.methodType(void.class, Object.class, long.class, Object.class)
+                        ), 1, offset
+                );
+
+                Object javaBaseModule = getModule.invoke(Object.class);
+                OptifabricSetup.addOpens(javaBaseModule, "jdk.internal.misc", thisModule);
+                OptifabricSetup.addOpens(javaBaseModule, "jdk.internal.access", thisModule);
+                OptifabricSetup.addOpens(javaBaseModule, "java.nio", thisModule);
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        }
         try {
             OptifineSetup optifineSetup = new OptifineSetup();
             Pair<File, ClassCache> runtime = optifineSetup.getRuntime();
@@ -60,5 +97,16 @@ public class OptifabricSetup implements Runnable {
             Optifabric.error = errorMessage.toString();
         }
         return incompatibleMods.isEmpty();
+    }
+
+    static final class ExportHelper {
+        private static void addOpens(final String packageName, final Object newModule) {
+            try {
+                Object module = Class.class.getDeclaredMethod("getModule").invoke(ExportHelper.class);
+                module.getClass().getDeclaredMethod("addOpens", String.class, module.getClass()).invoke(module, packageName, newModule);
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

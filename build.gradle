@@ -26,6 +26,7 @@ dependencies {
     include(modImplementation libs.fabric.asm.get())
     include(implementation libs.zt.zip.get())
     include(runtimeOnly libs.slf4j.api.get())
+    runtimeOnly(files "libs/optifine-mapped.jar")
 }
 
 processResources {
@@ -40,8 +41,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 jar {

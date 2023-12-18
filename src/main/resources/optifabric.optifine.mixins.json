@@ -3,6 +3,8 @@
   "package": "me.modmuss50.optifabric.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "NativeMemoryMixin",
+    "PatcherMixin",
     "ReflectorClassMixin"
   ]
 }
