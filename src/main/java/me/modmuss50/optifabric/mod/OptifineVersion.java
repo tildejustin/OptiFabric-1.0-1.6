@@ -3,11 +3,10 @@ package me.modmuss50.optifabric.mod;
 import me.modmuss50.optifabric.patcher.ASMUtils;
 import net.fabricmc.loader.api.*;
 import org.objectweb.asm.tree.*;
-import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.jar.*;
+import java.util.zip.ZipFile;
 
 public class OptifineVersion {
     public static String version;
@@ -91,14 +90,12 @@ public class OptifineVersion {
             }
         });
 
-        AtomicBoolean installer = new AtomicBoolean(false);
-        ZipUtil.iterate(file, (in, zipEntry) -> {
-            if (zipEntry.getName().startsWith("patch/")) {
-                installer.set(true);
-            }
-        });
+        boolean installer;
+        try (ZipFile fs = new ZipFile(file)) {
+            installer = fs.stream().anyMatch(entry -> entry.getName().startsWith("patch/"));
+        }
 
-        return installer.get() ? JarType.OPTIFINE_INSTALLER : JarType.OPTIFINE_MOD;
+        return installer ? JarType.OPTIFINE_INSTALLER : JarType.OPTIFINE_MOD;
     }
 
     public enum JarType {

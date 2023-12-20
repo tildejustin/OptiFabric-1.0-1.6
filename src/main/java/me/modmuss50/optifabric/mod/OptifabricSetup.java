@@ -21,11 +21,13 @@ public class OptifabricSetup implements Runnable {
 
     public static void addOpens(final Object from, final String packageName, final Object to) {
         try {
-            OptifabricSetup.magic.invokeExact((Object) ExportHelper.class, (Object) from);
-        } catch (final Throwable t) {
-            throw new RuntimeException(t);
+            Class<?> exportHelper = OptifabricSetup.class.getClassLoader().loadClass("me.modmuss50.optifabric.mod.ExportHelper");
+            Method addOpens = exportHelper.getDeclaredMethod("addOpens", String.class, Class.forName("java.lang.Module"));
+            OptifabricSetup.magic.invokeExact((Object) exportHelper, (Object) from);
+            addOpens.invoke(null, packageName, to);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
         }
-        ExportHelper.addOpens(packageName, to);
     }
 
     // this is called early on to allow us to get the transformers in before minecraft starts
@@ -97,16 +99,5 @@ public class OptifabricSetup implements Runnable {
             Optifabric.error = errorMessage.toString();
         }
         return incompatibleMods.isEmpty();
-    }
-
-    static final class ExportHelper {
-        private static void addOpens(final String packageName, final Object newModule) {
-            try {
-                Object module = Class.class.getDeclaredMethod("getModule").invoke(ExportHelper.class);
-                module.getClass().getDeclaredMethod("addOpens", String.class, module.getClass()).invoke(module, packageName, newModule);
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 }

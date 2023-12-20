@@ -2,9 +2,10 @@ package me.modmuss50.optifabric.patcher;
 
 import me.modmuss50.optifabric.IOUtils;
 import me.modmuss50.optifabric.mod.Optifabric;
-import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.*;
+import java.nio.file.FileSystem;
+import java.nio.file.*;
 import java.util.jar.JarFile;
 
 // pulls out the patched classes and saves into a classCache, and also creates an optifine jar without these classes
@@ -37,7 +38,15 @@ public class PatchSplitter {
             });
         }
         // remove all the classes that are going to be patched in with replaceClass, we don't want these on the classpath
-        ZipUtil.removeEntries(inputFile, classCache.getClasses().toArray(new String[0]));
+        try (FileSystem fs = FileSystems.newFileSystem(inputFile.toPath(), null)) {
+            classCache.getClasses().forEach(clazz -> {
+                try {
+                    Files.deleteIfExists(fs.getPath(clazz));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
 
         System.out.println("found " + classCache.getClasses().size() + " patched classes");
         classCache.save(classCacheOutput);

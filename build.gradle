@@ -24,8 +24,6 @@ dependencies {
     mappings legacy.yarn(libs.versions.minecraft.get(), libs.versions.yarn.build.get())
     modImplementation libs.fabric.loader
     include(modImplementation libs.fabric.asm.get())
-    include(implementation libs.zt.zip.get())
-    include(runtimeOnly libs.slf4j.api.get())
     runtimeOnly(files "libs/optifine-mapped.jar")
 }
 
@@ -37,11 +35,14 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.encoding = "UTF-8"
-    it.options.release.set(8)
+    if (java.toolchain.languageVersion.get() >= JavaLanguageVersion.of(9)) it.options.release.set(8)
 }
 
 java {
     sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
 }
 
 jar {

@@ -16,7 +16,10 @@ public class IOUtils {
         return os.toByteArray();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void writeByteArrayToFile(final File file, final byte[] data) throws IOException {
+        file.getParentFile().mkdirs();
+        file.createNewFile();
         try (OutputStream out = Files.newOutputStream(file.toPath())) {
             out.write(data, 0, data.length);
         }

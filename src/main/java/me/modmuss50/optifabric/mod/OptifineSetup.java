@@ -6,13 +6,13 @@ import net.fabricmc.loader.api.*;
 import net.fabricmc.loader.impl.launch.*;
 import net.fabricmc.loader.impl.lib.tinyremapper.IMappingProvider;
 import net.fabricmc.loader.impl.util.mappings.TinyRemapperMappingsHelper;
-import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.net.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.zip.*;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class OptifineSetup {
@@ -92,22 +92,26 @@ public class OptifineSetup {
         System.out.println("removing srg named entries from jar");
 
         // find all the srg named classes and remove them
-        ZipUtil.iterate(optifineModJar, (in, zipEntry) -> {
-            String name = zipEntry.getName();
-            if (name.startsWith("com/mojang/blaze3d/platform/")) {
-                if (name.contains("$")) {
+        try (ZipFile fs = new ZipFile(optifineModJar)) {
+            fs.stream().map(ZipEntry::getName).filter(name -> {
+                if (name.startsWith("srg/") || name.startsWith("net/minecraft/")) return true;
+                if (name.startsWith("com/mojang/blaze3d/platform/") && name.contains("$")) {
                     String[] split = name.replace(".class", "").split("\\$");
-                    if (split.length >= 2) {
-                        if (split[1].length() > 2) srgs.add(name);
-                    }
+                    return split.length >= 2 && split[1].length() > 2;
                 }
-            }
-            if (name.startsWith("srg/") || name.startsWith("net/minecraft/")) srgs.add(name);
-        });
+                return false;
+            }).forEach(srgs::add);
+        }
 
         if (jarOfTheFree.exists()) jarOfTheFree.delete();
 
-        ZipUtil.removeEntries(optifineModJar, srgs.toArray(new String[0]), jarOfTheFree);
+        Files.copy(optifineModJar.toPath(), jarOfTheFree.toPath());
+
+        try (FileSystem fs = FileSystems.newFileSystem(jarOfTheFree.toPath(), null)) {
+            for (String s : srgs) {
+                Files.deleteIfExists(fs.getPath(s));
+            }
+        }
 
         System.out.println("building lambda fix mappings");
         LambdaRebuilder rebuilder = new LambdaRebuilder(jarOfTheFree, this.getMinecraftJar().toFile());
@@ -133,7 +137,21 @@ public class OptifineSetup {
             if (optifineClasses.exists()) {
                 IOUtils.deleteDirectory(optifineClasses);
             }
-            ZipUtil.unpack(remappedJar, optifineClasses);
+            try (ZipFile fs = new ZipFile(remappedJar)) {
+                fs.stream().forEach(entry -> {
+                    try {
+                        Path p = optifineClasses.toPath().resolve(entry.getName());
+                        if (entry.isDirectory()) Files.createDirectories(p);
+                        else {
+                            Files.createDirectories(p.getParent());
+                            Files.createFile(p);
+                            Files.write(p, IOUtils.toByteArray(fs.getInputStream(entry)));
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
         }
 
         return Pair.of(remappedJar, classCache);
