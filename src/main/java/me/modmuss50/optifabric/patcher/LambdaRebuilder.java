@@ -1,9 +1,10 @@
 package me.modmuss50.optifabric.patcher;
 
-import net.fabricmc.loader.impl.lib.tinyremapper.*;
+import net.fabricmc.tinyremapper.*;
 import org.objectweb.asm.tree.*;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.jar.*;
 
@@ -14,25 +15,27 @@ public class LambdaRebuilder implements IMappingProvider {
     private final Map<String, String> methodMap = new HashMap<>();
     private final List<String> usedMethods = new ArrayList<>(); // used to prevent duplicates
 
-    public LambdaRebuilder(File optifineFile, File minecraftClientFile) throws IOException {
-        optifineJar = new JarFile(optifineFile);
-        clientJar = new JarFile(minecraftClientFile);
+    public LambdaRebuilder(Path optifineFile, Path minecraftClientFile) throws IOException {
+        this.optifineJar = new JarFile(optifineFile.toFile());
+        this.clientJar = new JarFile(minecraftClientFile.toFile());
     }
 
     public void buildLambdaMap() throws IOException {
-        Enumeration<JarEntry> entries = optifineJar.entries();
-        while (entries.hasMoreElements()) {
-            JarEntry entry = entries.nextElement();
+        this.optifineJar.stream().forEach(entry -> {
             if (entry.getName().endsWith(".class") && !entry.getName().startsWith("net/") && !entry.getName().startsWith("optifine/") && !entry.getName().startsWith("javax/")) {
-                buildClassMap(entry);
+                try {
+                    this.buildClassMap(entry);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }
-        optifineJar.close();
-        clientJar.close();
+        });
+        this.optifineJar.close();
+        this.clientJar.close();
     }
 
     private void buildClassMap(JarEntry jarEntry) throws IOException {
-        ClassNode classNode = ASMUtils.asClassNode(jarEntry, optifineJar);
+        ClassNode classNode = ASMUtils.asClassNode(jarEntry, this.optifineJar);
         List<MethodNode> lambdaNodes = new ArrayList<>();
         for (MethodNode methodNode : classNode.methods) {
             if (!methodNode.name.startsWith("lambda$") || methodNode.name.startsWith("lambda$static")) {
@@ -43,22 +46,22 @@ public class LambdaRebuilder implements IMappingProvider {
         if (lambdaNodes.isEmpty()) {
             return;
         }
-        ClassNode minecraftClass = ASMUtils.asClassNode(clientJar.getJarEntry(jarEntry.getName()), clientJar);
+        ClassNode minecraftClass = ASMUtils.asClassNode(this.clientJar.getJarEntry(jarEntry.getName()), this.clientJar);
         if (!minecraftClass.name.equals(classNode.name)) {
             throw new RuntimeException("something went wrong");
         }
         for (MethodNode methodNode : lambdaNodes) {
-            MethodNode actualNode = findMethod(methodNode, minecraftClass);
+            MethodNode actualNode = this.findMethod(methodNode, minecraftClass);
             if (actualNode == null) {
                 continue;
             }
             String key = classNode.name + "." + MemberInstance.getMethodId(actualNode.name, actualNode.desc);
-            if (usedMethods.contains(key)) {
+            if (this.usedMethods.contains(key)) {
                 System.out.println("skipping duplicate: " + key);
                 continue;
             }
-            usedMethods.add(classNode.name + "." + MemberInstance.getMethodId(actualNode.name, actualNode.desc));
-            methodMap.put(classNode.name + "/" + MemberInstance.getMethodId(methodNode.name, methodNode.desc), actualNode.name);
+            this.usedMethods.add(classNode.name + "." + MemberInstance.getMethodId(actualNode.name, actualNode.desc));
+            this.methodMap.put(classNode.name + "/" + MemberInstance.getMethodId(methodNode.name, methodNode.desc), actualNode.name);
         }
     }
 
@@ -80,6 +83,6 @@ public class LambdaRebuilder implements IMappingProvider {
     @SuppressWarnings("CollectionAddedToSelf")
     @Override
     public void load(MappingAcceptor out) {
-        methodMap.putAll(this.methodMap);
+        this.methodMap.putAll(this.methodMap);
     }
 }

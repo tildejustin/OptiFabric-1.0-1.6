@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "optifabric",
   "version": "${version}",
-  "name": "optifabric",
-  "description": "optifabric is a mod that loads optifine into fabric",
+  "name": "Optifabric",
+  "description": "Optifabric is a mod that loads Optifine into Fabric",
   "authors": [
     "Modmuss50",
     "Chocohead",
@@ -25,10 +25,13 @@
   "entrypoints": {
     "mm:early_risers": [
       "me.modmuss50.optifabric.mod.OptifabricSetup"
+    ],
+    "preLaunch": [
+      "me.modmuss50.optifabric.mod.OptifabricLoadGuard"
     ]
   },
   "depends": {
-    "fabricloader": ">=0.15.0",
+    "fabricloader": ">=0.14.0",
     "minecraft": ">=1.8 <1.13"
   },
   "accessWidener": "optifabric.accesswidener"

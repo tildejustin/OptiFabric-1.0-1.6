@@ -5,7 +5,10 @@ import net.fabricmc.loader.api.*;
 import org.objectweb.asm.tree.*;
 
 import java.io.*;
+import java.nio.file.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.jar.*;
+import java.util.stream.Stream;
 import java.util.zip.ZipFile;
 
 public class OptifineVersion {
@@ -13,49 +16,47 @@ public class OptifineVersion {
     public static String minecraftVersion;
     public static JarType jarType;
 
-    public static File findOptifineJar() throws IOException {
-        File modsDir = FabricLoader.getInstance().getGameDir().resolve("mods").toFile();
-        File[] mods = modsDir.listFiles();
+    public static Path findOptifineJar() throws IOException {
+        final Path modsDir = FabricLoader.getInstance().getGameDir().resolve("mods");
+        final AtomicReference<Path> optifineJar = new AtomicReference<>();
 
-        File optifineJar = null;
-
-        if (mods != null) {
-            for (File file : mods) {
-                if (file.isDirectory()) {
-                    continue;
+        try (Stream<Path> mods = Files.list(modsDir)) {
+            mods.forEach(mod -> {
+                if (Files.isDirectory(mod)) {
+                    return;
                 }
-                if (file.getName().endsWith(".zip") || file.getName().endsWith(".jar")) {
-                    JarType type = getJarType(file);
-                    if (type.error) {
-                        if (!type.equals(JarType.INCOMPATIBLE)) {
-                            throw new RuntimeException("an error occurred when trying to find the optifine jar: " + type.name());
-                        } else {
-                            continue;
-                        }
-                    }
-                    if (type == JarType.OPTIFINE_MOD || type == JarType.OPTIFINE_INSTALLER) {
-                        if (optifineJar != null) {
-                            Optifabric.error = "found 2 or more optifine jars, please ensure you only have 1 copy of optifine in the mods folder!";
-                            throw new FileNotFoundException("multiple optifine jars");
-                        }
-                        jarType = type;
-                        optifineJar = file;
-                    }
+                if (!mod.toString().endsWith(".zip") && !mod.toString().endsWith(".jar")) {
+                    return;
                 }
-            }
+                JarType type = OptifineVersion.getJarType(mod);
+                if (type.error) {
+                    if (type != JarType.INCOMPATIBLE) {
+                        throw new RuntimeException(String.format("an error occurred when trying to find the optifine jar: %s", type.name()));
+                    }
+                    return;
+                }
+                if (type == JarType.OPTIFINE_MOD || type == JarType.OPTIFINE_INSTALLER) {
+                    if (optifineJar.get() != null) {
+                        Optifabric.error = "found 2 or more optifine jars, please ensure you only have 1 copy of optifine in the mods folder!";
+                        throw new RuntimeException("multiple optifine jars");
+                    }
+                    jarType = type;
+                    optifineJar.set(mod);
+                }
+            });
         }
 
-        if (optifineJar != null) {
-            return optifineJar;
+        if (optifineJar.get() != null) {
+            return optifineJar.get();
         }
 
         Optifabric.error = "optifabric could not find the optifine jar in the mods folder.";
         throw new FileNotFoundException("could not find optifine jar");
     }
 
-    private static JarType getJarType(File file) throws IOException {
+    private static JarType getJarType(Path file) {
         ClassNode classNode;
-        try (JarFile jarFile = new JarFile(file)) {
+        try (JarFile jarFile = new JarFile(file.toFile())) {
             JarEntry jarEntry = jarFile.getJarEntry("Config.class");
             if (jarEntry == null) {
                 jarEntry = jarFile.getJarEntry("VersionThread.class");
@@ -65,6 +66,8 @@ public class OptifineVersion {
                 return JarType.SOMETHING_ELSE;
             }
             classNode = ASMUtils.asClassNode(jarEntry, jarFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         for (FieldNode fieldNode : classNode.fields) {
@@ -91,8 +94,10 @@ public class OptifineVersion {
         });
 
         boolean installer;
-        try (ZipFile fs = new ZipFile(file)) {
+        try (ZipFile fs = new ZipFile(file.toFile())) {
             installer = fs.stream().anyMatch(entry -> entry.getName().startsWith("patch/"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         return installer ? JarType.OPTIFINE_INSTALLER : JarType.OPTIFINE_MOD;

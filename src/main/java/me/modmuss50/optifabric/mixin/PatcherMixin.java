@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.*;
 public class PatcherMixin {
     @Redirect(method = "process", at = @At(value = "INVOKE", target = "Ljava/lang/String;equals(Ljava/lang/Object;)Z"))
     private static boolean ignoreHashFailure(String instance, Object o) {
+        // not used for anything at the moment but could fix issues with named mappings?
         return true;
     }
 }

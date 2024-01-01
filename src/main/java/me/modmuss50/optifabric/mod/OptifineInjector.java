@@ -13,7 +13,7 @@ public class OptifineInjector {
 
     private static final List<String> patched = new ArrayList<>();
     ClassCache classCache;
-    // i have no idea why and how this works, if you know better please let me know
+    // I have no idea why and how this works, if you know better please let me know
     public final Consumer<ClassNode> transformer = target -> {
         if (patched.contains(target.name)) {
             System.out.println("Already patched" + target.name);
@@ -21,8 +21,8 @@ public class OptifineInjector {
         }
         patched.add(target.name);
 
-        // i cannot imagine this being very good at all
-        ClassNode source = getSourceClassNode(target);
+        // I cannot imagine this being very good at all
+        ClassNode source = this.getSourceClassNode(target);
 
         target.methods = source.methods;
         target.fields = source.fields;
@@ -43,9 +43,9 @@ public class OptifineInjector {
 
         // let's make every class we touch public
         if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
-            target.access = modAccess(target.access);
-            target.methods.forEach(methodNode -> methodNode.access = modAccess(methodNode.access));
-            target.fields.forEach(fieldNode -> fieldNode.access = modAccess(fieldNode.access));
+            target.access = OptifineInjector.modAccess(target.access);
+            target.methods.forEach(methodNode -> methodNode.access = OptifineInjector.modAccess(methodNode.access));
+            target.fields.forEach(fieldNode -> fieldNode.access = OptifineInjector.modAccess(fieldNode.access));
         }
     };
 
@@ -53,22 +53,20 @@ public class OptifineInjector {
         this.classCache = classCache;
     }
 
-    @SuppressWarnings("unused")
     private static int modAccess(int access) {
         if ((access & 0x7) != Opcodes.ACC_PRIVATE) {
             return (access & (~0x7)) | Opcodes.ACC_PUBLIC;
-        } else {
-            return access;
         }
+        return access;
     }
 
     public void setup() {
-        classCache.getClasses().forEach(s -> ClassTinkerers.addReplacement(s.replaceAll("/", ".").substring(0, s.length() - 6), transformer));
+        this.classCache.getClasses().forEach(s -> ClassTinkerers.addReplacement(s.replaceAll("/", ".").substring(0, s.length() - ".class".length()), this.transformer));
     }
 
     private ClassNode getSourceClassNode(ClassNode classNode) {
         String name = classNode.name.replaceAll("\\.", "/") + ".class";
-        byte[] bytes = classCache.getAndRemove(name);
+        byte[] bytes = this.classCache.getAndRemove(name);
         if (bytes == null) {
             throw new RuntimeException("failed to find patched class for: " + name);
         }

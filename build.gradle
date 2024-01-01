@@ -11,12 +11,16 @@ base {
     archivesName = archives_name
 }
 
-repositories {
-    maven { url "https://jitpack.io" }
+// intentionally do not apply accessWidener, makes it difficult to check the access and thus necessity of its contents
+loom {
+    runConfigs.configureEach {
+        ideConfigGenerated = false
+    }
 }
 
-loom {
-    accessWidenerPath = file("src/main/resources/optifabric.accesswidener")
+repositories {
+    mavenLocal()
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -24,6 +28,8 @@ dependencies {
     mappings legacy.yarn(libs.versions.minecraft.get(), libs.versions.yarn.build.get())
     modImplementation libs.fabric.loader
     include(modImplementation libs.fabric.asm.get())
+    include(implementation libs.mapping.io.get())
+    include(implementation libs.tiny.remapper.get())
     runtimeOnly(files "libs/optifine-mapped.jar")
 }
 

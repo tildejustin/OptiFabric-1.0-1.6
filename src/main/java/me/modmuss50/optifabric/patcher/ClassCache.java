@@ -2,6 +2,7 @@ package me.modmuss50.optifabric.patcher;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.util.*;
 import java.util.zip.*;
 
@@ -49,46 +50,45 @@ public class ClassCache {
     }
 
     public void addClass(String name, byte[] bytes) {
-        if (classes.containsKey(name)) {
-            throw new UnsupportedOperationException(name + " is already in ClassCache");
+        if (this.classes.containsKey(name)) {
+            throw new UnsupportedOperationException(name + " is already in the classcache");
         }
         Objects.requireNonNull(bytes, "bytes cannot be null");
-        classes.put(name, bytes);
+        this.classes.put(name, bytes);
     }
 
     public byte[] getClass(String name) {
-        return classes.get(name);
+        return this.classes.get(name);
     }
 
     public byte[] getAndRemove(String name) {
-        byte[] bytes = getClass(name);
-        classes.remove(name);
+        byte[] bytes = this.getClass(name);
+        this.classes.remove(name);
         return bytes;
     }
 
     public byte[] getHash() {
-        return hash;
+        return this.hash;
     }
 
     public Set<String> getClasses() {
-        return classes.keySet();
+        return this.classes.keySet();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void save(File output) throws IOException {
-        if (output.exists()) output.delete();
+    public void save(Path output) throws IOException {
+        Files.deleteIfExists(output);
 
-        FileOutputStream fos = new FileOutputStream(output);
+        FileOutputStream fos = new FileOutputStream(output.toFile());
         GZIPOutputStream gos = new GZIPOutputStream(fos);
         DataOutputStream dos = new DataOutputStream(gos);
 
         // write the hash
-        dos.writeInt(hash.length);
-        dos.write(hash);
+        dos.writeInt(this.hash.length);
+        dos.write(this.hash);
 
         // write the number of classes
-        dos.writeInt(classes.size());
-        for (Map.Entry<String, byte[]> clazz : classes.entrySet()) {
+        dos.writeInt(this.classes.size());
+        for (Map.Entry<String, byte[]> clazz : this.classes.entrySet()) {
             String name = clazz.getKey();
             byte[] nameBytes = name.getBytes(StandardCharsets.UTF_8);
             byte[] bytes = clazz.getValue();

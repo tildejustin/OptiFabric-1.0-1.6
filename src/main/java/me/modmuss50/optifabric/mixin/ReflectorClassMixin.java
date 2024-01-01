@@ -16,10 +16,11 @@ public class ReflectorClassMixin {
 
     @Inject(method = "getTargetClass", at = @At("HEAD"), remap = false)
     private void getTargetClass(CallbackInfoReturnable<Class<?>> infoReturnable) {
-        if (!checked) { // only check the target if it hasn't been done yet
-            String name = targetClassName.replaceAll("/", ".");
+        if (!this.checked) {
+            // only check the target if it hasn't been done yet
+            String name = this.targetClassName.replaceAll("/", ".");
             if (name.startsWith("net.minecraft.launchwrapper") || name.startsWith("net.minecraftforge") || "optifine.OptiFineClassTransformer".equals(name)) {
-                checked = true;
+                this.checked = true;
             }
         }
     }

@@ -16,28 +16,30 @@ public class IOUtils {
         return os.toByteArray();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void writeByteArrayToFile(final File file, final byte[] data) throws IOException {
-        file.getParentFile().mkdirs();
-        file.createNewFile();
-        try (OutputStream out = Files.newOutputStream(file.toPath())) {
+    public static void writeByteArrayToFile(Path file, final byte[] data) throws IOException {
+        Files.createDirectories(file.getParent());
+        if (!Files.exists(file)) {
+            Files.createFile(file);
+        }
+        try (OutputStream out = Files.newOutputStream(file)) {
             out.write(data, 0, data.length);
         }
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void deleteDirectory(File optifineClasses) throws IOException {
-        try (Stream<Path> walk = Files.walk(optifineClasses.toPath())) {
+    public static void deleteDirectory(Path optifineClasses) throws IOException {
+        try (Stream<Path> walk = Files.walk(optifineClasses)) {
             walk.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
         }
-        optifineClasses.delete();
+        Files.deleteIfExists(optifineClasses);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
-    public static byte[] fileHash(File input) throws IOException, NoSuchAlgorithmException {
+    public static byte[] fileHash(Path input) throws IOException, NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
-        try (InputStream is = Files.newInputStream(input.toPath()); DigestInputStream dis = new DigestInputStream(is, md)) {
-            while (dis.read() != -1) ;
+        try (InputStream is = Files.newInputStream(input); DigestInputStream dis = new DigestInputStream(is, md)) {
+            while (dis.read() != -1) {
+            }
         }
         return md.digest();
     }
