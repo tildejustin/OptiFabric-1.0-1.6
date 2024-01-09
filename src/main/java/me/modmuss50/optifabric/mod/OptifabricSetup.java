@@ -2,10 +2,11 @@ package me.modmuss50.optifabric.mod;
 
 import com.chocohead.mm.api.ClassTinkerers;
 import me.modmuss50.optifabric.Pair;
-import me.modmuss50.optifabric.patcher.ClassCache;
+import me.modmuss50.optifabric.patcher.*;
 import net.fabricmc.loader.api.*;
 import org.spongepowered.asm.mixin.Mixins;
 import org.spongepowered.asm.service.*;
+import org.spongepowered.asm.util.JavaVersion;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -23,6 +24,11 @@ public class OptifabricSetup implements Runnable {
     public void run() {
         if (!this.validateMods()) {
             return;
+        }
+        if (JavaVersion.current() >= JavaVersion.JAVA_9) {
+            AddOpens.open("java.base", "jdk.internal.misc");
+            AddOpens.open("java.base", "jdk.internal.access");
+            AddOpens.open("java.base", "java.nio");
         }
         try {
             Pair<Path, ClassCache> runtime = new OptifineSetup().getRuntime();
