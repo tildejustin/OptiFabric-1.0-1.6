@@ -17,6 +17,7 @@ public class RemapUtils {
                 .withMappings(mappings)
                 .renameInvalidLocals(true)
                 .rebuildSourceFilenames(true)
+                .checkPackageAccess(true)
                 .fixPackageAccess(true)
                 .build();
         try {

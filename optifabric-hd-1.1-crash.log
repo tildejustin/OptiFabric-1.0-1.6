@@ -1,0 +1,199 @@
+Prism Launcher version: 7.2 (official)
+
+
+Launched instance in offline mode
+
+Minecraft folder is:
+C:/Users/********/AppData/Roaming/PrismLauncher/instances/1.1/.minecraft
+
+
+Java path is:
+C:/Users/********/Downloads/jdk-22+19-jre/bin/javaw.exe
+
+
+Java is version 22-beta, using 64 (amd64) architecture, from Eclipse Adoptium.
+
+
+Main Class:
+  net.fabricmc.loader.impl.launch.knot.KnotClient
+
+Native path:
+  C:/Users/********/AppData/Roaming/PrismLauncher/instances/1.1/natives
+
+Traits:
+traits texturepacks
+
+Libraries:
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/net/java/jinput/jinput/2.0.5/jinput-2.0.5.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/net/java/jutils/jutils/1.0.0/jutils-1.0.0.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/org/lwjgl/lwjgl/lwjgl/2.9.0/lwjgl-2.9.0.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/org/lwjgl/lwjgl/lwjgl_util/2.9.0/lwjgl_util-2.9.0.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/net/minecraft/launchwrapper/1.5/launchwrapper-1.5.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/net/sf/jopt-simple/jopt-simple/4.5/jopt-simple-4.5.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/net/ornithemc/calamus-intermediary/1.1-client/calamus-intermediary-1.1-client.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/net/fabricmc/tiny-mappings-parser/0.3.0+build.17/tiny-mappings-parser-0.3.0+build.17.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/net/fabricmc/sponge-mixin/0.12.5+mixin.0.8.5/sponge-mixin-0.12.5+mixin.0.8.5.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/net/fabricmc/tiny-remapper/0.8.2/tiny-remapper-0.8.2.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/net/fabricmc/access-widener/2.1.0/access-widener-2.1.0.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/org/ow2/asm/asm/9.6/asm-9.6.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/org/ow2/asm/asm-analysis/9.6/asm-analysis-9.6.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/org/ow2/asm/asm-commons/9.6/asm-commons-9.6.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/org/ow2/asm/asm-tree/9.6/asm-tree-9.6.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/org/ow2/asm/asm-util/9.6/asm-util-9.6.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/net/fabricmc/fabric-loader/0.14.23/fabric-loader-0.14.23.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/com/mojang/minecraft/1.1/minecraft-1.1-client.jar
+
+Native libraries:
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/net/java/jinput/jinput-platform/2.0.5/jinput-platform-2.0.5-natives-windows.jar
+  C:/Users/********/AppData/Roaming/PrismLauncher/libraries/org/lwjgl/lwjgl/lwjgl-platform/2.9.0/lwjgl-platform-2.9.0-natives-windows.jar
+
+Mods:
+  [✔] optifabric-2.2.0+1.0-1.2
+  [✔] OptiFine_1.1_HD_D6
+
+Params:
+    --gameDir C:/Users/********/AppData/Roaming/PrismLauncher/instances/1.1/.minecraft --assetsDir C:/Users/********/AppData/Roaming/PrismLauncher/instances/1.1/.minecraft/resources
+
+Window size: 854 x 480
+
+Launcher: standard
+
+Java major version is incompatible. Things might break.
+Java Arguments:
+[-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump, -Xms2048m, -Xmx2048m, -Duser.language=en]
+
+
+Minecraft process ID: 15060
+
+
+[17:19:12] [INFO] [FabricLoader/GameProvider]: Loading Minecraft 1.1 with Fabric Loader 0.14.23
+[17:19:12] [INFO] [FabricLoader/GameRemap]: Fabric is preparing JARs on first launch, this may take a few seconds...
+[17:19:14] [INFO] [FabricLoader/]: Loading 11 mods:
+	- fabricloader 0.14.23
+	- java 22
+	- minecraft 1.1
+	- optifabric 2.2.0+1.0-1.2
+	   |-- commons-codec_commons-codec 1.15
+	   |-- commons-io_commons-io 2.11.0
+	   |-- mm 2.3.2
+	   |-- org_apache_commons_commons-lang3 3.12.0
+	   |-- org_slf4j_slf4j-api 1.7.30
+	   |-- org_slf4j_slf4j-simple 1.7.30
+	   \-- org_zeroturnaround_zt-zip 1.14
+[17:19:14] [INFO] [FabricLoader/Mixin]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=file:/C:/Users/********/AppData/Roaming/PrismLauncher/libraries/net/fabricmc/sponge-mixin/0.12.5+mixin.0.8.5/sponge-mixin-0.12.5+mixin.0.8.5.jar Service=Knot/Fabric Env=CLIENT
+Optifabric is still using the traditional Early Riser initialisation
+jar entry: null
+jar entry: Config.class
+Setting up optifine for the first time, this may take a few seconds.
+De-Volderfiying jar
+Building lambada fix mappings
+Remapping optifine with fixed lambada names
+[17:19:16] [ERROR] [FabricLoader/Mixin]: Error encountered during mixin config postInit step 'mixins.mm.json' from mod 'mm': Failed to setup optifine
+java.lang.RuntimeException: Failed to setup optifine
+	at me.modmuss50.optifabric.mod.OptifabricSetup.run(OptifabricSetup.java:42)
+	at com.chocohead.mm.Plugin.getMixins(Plugin.java:346)
+	at org.spongepowered.asm.mixin.transformer.PluginHandle.getMixins(PluginHandle.java:128)
+	at org.spongepowered.asm.mixin.transformer.MixinConfig.postInitialise(MixinConfig.java:796)
+	at org.spongepowered.asm.mixin.transformer.MixinProcessor.prepareConfigs(MixinProcessor.java:568)
+	at org.spongepowered.asm.mixin.transformer.MixinProcessor.select(MixinProcessor.java:462)
+	at org.spongepowered.asm.mixin.transformer.MixinProcessor.checkSelect(MixinProcessor.java:438)
+	at org.spongepowered.asm.mixin.transformer.MixinProcessor.applyMixins(MixinProcessor.java:290)
+	at org.spongepowered.asm.mixin.transformer.MixinTransformer.transformClass(MixinTransformer.java:234)
+	at org.spongepowered.asm.mixin.transformer.MixinTransformer.transformClassBytes(MixinTransformer.java:202)
+	at net.fabricmc.loader.impl.launch.knot.KnotClassDelegate.getPostMixinClassByteArray(KnotClassDelegate.java:422)
+	at net.fabricmc.loader.impl.launch.knot.KnotClassDelegate.tryLoadClass(KnotClassDelegate.java:323)
+	at net.fabricmc.loader.impl.launch.knot.KnotClassDelegate.loadClass(KnotClassDelegate.java:218)
+	at net.fabricmc.loader.impl.launch.knot.KnotClassLoader.loadClass(KnotClassLoader.java:119)
+	at java.base/java.lang.ClassLoader.loadClass(Unknown Source)
+	at net.fabricmc.loader.impl.game.minecraft.applet.AppletLauncher.<init>(AppletLauncher.java:68)
+	at net.fabricmc.loader.impl.game.minecraft.applet.AppletFrame.launch(AppletFrame.java:108)
+	at net.fabricmc.loader.impl.game.minecraft.applet.AppletMain.run(AppletMain.java:44)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(Unknown Source)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(Unknown Source)
+	at java.desktop/java.awt.EventQueue$4.run(Unknown Source)
+	at java.desktop/java.awt.EventQueue$4.run(Unknown Source)
+	at java.base/java.security.AccessController.doPrivileged(Unknown Source)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(Unknown Source)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(Unknown Source)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(Unknown Source)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(Unknown Source)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(Unknown Source)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(Unknown Source)
+	at java.desktop/java.awt.EventDispatchThread.run(Unknown Source)
+Caused by: java.lang.RuntimeException: Failed to remap jar
+	at me.modmuss50.optifabric.patcher.RemapUtils.mapJar(RemapUtils.java:38)
+	at me.modmuss50.optifabric.mod.OptifineSetup.getRuntime(OptifineSetup.java:141)
+	at me.modmuss50.optifabric.mod.OptifabricSetup.run(OptifabricSetup.java:28)
+	... 30 more
+Caused by: java.lang.RuntimeException: java.util.concurrent.ExecutionException: java.lang.StringIndexOutOfBoundsException: Index 18 out of bounds for length 18
+	at net.fabricmc.tinyremapper.TinyRemapper.waitForAll(TinyRemapper.java:1170)
+	at net.fabricmc.tinyremapper.TinyRemapper.apply(TinyRemapper.java:912)
+	at net.fabricmc.tinyremapper.TinyRemapper.apply(TinyRemapper.java:872)
+	at me.modmuss50.optifabric.patcher.RemapUtils.mapJar(RemapUtils.java:33)
+	... 32 more
+Caused by: java.util.concurrent.ExecutionException: java.lang.StringIndexOutOfBoundsException: Index 18 out of bounds for length 18
+	at java.base/De-Volderfiying jar
+java.util.concurrent.FutureTask.report(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.get(Unknown Source)
+	at net.fabricmc.tinyremapper.TinyRemapper.waitForAll(TinyRemapper.java:1167)
+	... 35 more
+Caused by: java.lang.StringIndexOutOfBoundsException: Index 18 out of bounds for length 18
+	at java.base/jdk.internal.util.Preconditions$1.apply(Unknown Source)
+	at java.base/jdk.internal.util.Preconditions$1.apply(Unknown Source)
+	at java.base/jdk.internal.util.Preconditions$4.apply(Unknown Source)
+	at java.base/jdk.internal.util.Preconditions$4.apply(Unknown Source)
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Unknown Source)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Unknown Source)
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Unknown Source)
+	at java.base/java.lang.String.checkIndex(Unknown Source)
+	at java.base/java.lang.StringLatin1.charAt(Unknown Source)
+	at java.base/java.lang.String.charAt(Unknown Source)
+	at org.objectweb.asm.signature.SignatureReader.parseType(SignatureReader.java:190)
+	at org.objectweb.asm.signature.SignatureReader.accept(SignatureReader.java:122)
+	at org.objectweb.asm.commons.Remapper.mapSignature(Remapper.java:215)
+	at org.objectweb.asm.commons.ClassRemapper.visit(ClassRemapper.java:106)
+	at net.fabricmc.tinyremapper.VisitTrackingClassRemapper.visit(VisitTrackingClassRemapper.java:40)
+	at net.fabricmc.tinyremapper.AsmClassRemapper.visit(AsmClassRemapper.java:80)
+	at org.objectweb.asm.ClassReader.accept(ClassReader.java:570)
+	at org.objectweb.asm.ClassReader.accept(ClassReader.java:425)
+	at net.fabricmc.tinyremapper.TinyRemapper.apply(TinyRemapper.java:1077)
+	at net.fabricmc.tinyremapper.TinyRemapper.lambda$apply$5(TinyRemapper.java:908)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
+	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+27 achievements
+174 recipes
+[MM] Definitely not up to no good
+Setting user: tildejustin, -
+Oct 23, 2023 5:19:19 PM net.java.games.input.DefaultControllerEnvironment getControllers
+WARNING: Found unknown Windows version: Windows 11
+Oct 23, 2023 5:19:19 PM net.java.games.input.DefaultControllerEnvironment getControllers
+INFO: Attempting to use default windows plug-in.
+Oct 23, 2023 5:19:19 PM net.java.games.input.DefaultControllerEnvironment getControllers
+INFO: Loading: net.java.games.input.DirectAndRawInputEnvironmentPlugin
+Oct 23, 2023 5:19:19 PM net.java.games.input.ControllerEnvironment log
+INFO: Failed to initialize device HIDI2C Device because of: java.io.IOException: Failed to acquire device (8007001e)
+Starting up SoundSystem...
+Initializing LWJGL OpenAL
+    (The LWJGL binding of OpenAL.  For more information, see http://www.lwjgl.org)
+OpenAL initialized.
+An Optifabric error has occurred
+Failed to load optifine, check the log for more info
+ Failed to remap jar
+Failed to add pack.mcmeta
+Failed to add READ_ME_I_AM_VERY_IMPORTANT
+java.io.FileNotFoundException: http://s3.amazonaws.com/MinecraftResources/
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
+	at java.base/java.net.URL.openStream(Unknown Source)
+	at net.minecraft.unmapped.C_9029783.run(C_9029783.java:28)
+An Optifabric error has occurred
+Failed to load optifine, check the log for more info
+ Failed to remap jar
+Stopping!
+SoundSystem shutting down...
+    Author: Paul Lamb, www.paulscode.com
+Process exited with code 0.

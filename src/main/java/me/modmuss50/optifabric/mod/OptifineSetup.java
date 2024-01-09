@@ -6,7 +6,7 @@ import me.modmuss50.optifabric.patcher.*;
 import net.fabricmc.loader.api.*;
 import net.fabricmc.loader.impl.launch.FabricLauncherBase;
 import net.fabricmc.mappingio.MappingReader;
-import net.fabricmc.mappingio.tree.MemoryMappingTree;
+import net.fabricmc.mappingio.tree.*;
 import net.fabricmc.tinyremapper.IMappingProvider;
 
 import java.io.*;
@@ -137,6 +137,7 @@ public class OptifineSetup {
             Files.deleteIfExists(optifineModJar);
         }
 
+        // TODO: for extract, make a remapped jar containing both class sets instead of individual files
         if (Boolean.parseBoolean(System.getProperty("optifabric.extract", "false"))) {
             System.out.println("extracting optifine classes");
             Path optifineClasses = versionDir.resolve("optifine-classes");
@@ -168,7 +169,6 @@ public class OptifineSetup {
         String namespace = FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace();
         System.out.println("remapping optifine to " + namespace);
         List<Path> mcLibs = this.getLibs();
-        System.out.println(mcLibs);
         mcLibs.add(this.getMinecraftJar());
         RemapUtils.mapJar(remappedJar, input, this.createMappings("official", namespace), mcLibs);
     }
@@ -180,7 +180,27 @@ public class OptifineSetup {
             assert mappings != null;
             MappingReader.read(new InputStreamReader(mappings), tree);
         }
-        return TinyRemapperMappingsHelper.create(tree, from, to);
+        int fromId = tree.getNamespaceId(from);
+        return (out) -> {
+            for (MappingTree.ClassMapping classDef : tree.getClasses()) {
+                String className = classDef.getName(from);
+                out.acceptClass(className, classDef.getName(to));
+
+                for (MappingTree.FieldMapping field : classDef.getFields()) {
+                    out.acceptField(new IMappingProvider.Member(className, field.getName(from), field.getDesc(fromId)), field.getName(to));
+                }
+
+                for (MappingTree.MethodMapping method : classDef.getMethods()) {
+                    // cwv.a(II)Z now overrides ayl.a(II)Z, need to remove the mapping
+                    // for 1.13.2
+                    if ("cwv".equals(className) && "a".equals(method.getName(from)) && "(II)Z".equals(method.getDesc(fromId))) {
+                        continue;
+                    }
+                    out.acceptMethod(new IMappingProvider.Member(className, method.getName(from), method.getDesc(fromId)), method.getName(to));
+                }
+            }
+        };
+        // return TinyRemapperMappingsHelper.create(tree, from, to);
     }
 
     List<Path> getLibs() {

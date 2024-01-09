@@ -59,7 +59,10 @@ public class OptifineVersion {
         try (JarFile jarFile = new JarFile(file.toFile())) {
             JarEntry jarEntry = jarFile.getJarEntry("Config.class");
             if (jarEntry == null) {
-                jarEntry = jarFile.getJarEntry("VersionThread.class");
+                jarEntry = jarFile.getJarEntry("VersionThread.class" /* optifine light and pre-1.3? */);
+            }
+            if (jarEntry == null) {
+                jarEntry = jarFile.getJarEntry("net/optifine/Config.class" /* 1.13+ */);
             }
             System.out.println("jar entry: " + jarEntry);
             if (jarEntry == null) {

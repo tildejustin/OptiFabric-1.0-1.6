@@ -1,0 +1,14 @@
+accessWidener v2 named
+accessible method net/minecraft/block/Block setOpacity (I)Lnet/minecraft/block/Block;
+accessible field net/minecraft/resource/AbstractFileResourcePack base Ljava/io/File;
+accessible field net/minecraft/entity/LivingEntity despawnCounter I
+accessible method net/minecraft/entity/mob/MobEntity checkDespawn ()V
+accessible method net/minecraft/util/Language getInstance ()Lnet/minecraft/util/Language;
+accessible field net/minecraft/client/particle/Particle red F
+accessible field net/minecraft/client/particle/Particle green F
+accessible field net/minecraft/client/particle/Particle blue F
+accessible field net/minecraft/client/gui/widget/ButtonWidget width I
+accessible field net/minecraft/client/gui/widget/ButtonWidget height I
+accessible method net/minecraft/client/texture/TextureUtil bindTexture (I)V
+accessible field net/minecraft/client/render/GameRenderer lightmapFlicker F
+accessible method net/minecraft/block/Block method_462 (I)Lnet/minecraft/block/Block;

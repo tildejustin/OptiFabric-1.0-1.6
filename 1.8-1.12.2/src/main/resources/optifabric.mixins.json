@@ -1,0 +1,8 @@
+{
+  "required": true,
+  "package": "me.modmuss50.optifabric.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "TitleScreenMixin"
+  ]
+}

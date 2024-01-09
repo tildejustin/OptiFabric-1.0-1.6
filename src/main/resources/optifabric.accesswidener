@@ -1,7 +1,0 @@
-accessWidener v2 named
-accessible field net/minecraft/client/gui/widget/ButtonWidget width I
-accessible field net/minecraft/client/gui/widget/ButtonWidget height I
-accessible method net/minecraft/util/Language getInstance ()Lnet/minecraft/util/Language;
-accessible method net/minecraft/block/Block setOpacity (I)Lnet/minecraft/block/Block;
-accessible field net/minecraft/entity/LivingEntity despawnCounter I
-accessible field net/minecraft/resource/AbstractFileResourcePack base Ljava/io/File;

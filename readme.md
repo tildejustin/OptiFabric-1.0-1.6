@@ -1,72 +1,40 @@
-# OptiFabric
+## Legacy Optifabric
 
-__Note:__ This project is not related or supported by either Fabric or Optifine.
+Optifabric for Legacy Fabric (1.3-1.13.2) and Ornithe (1.0-1.13.2)
 
-__Note:__ This project does not contain Optifine, you must download it separately!
+based on the work of [RedLime's OptiFabric-Pre1.14](https://github.com/RedLime/OptiFabric-Pre1.14), a fork of [hYdos's OptiFabric 1.8.9](https://github.com/hYdos/OptiFabric) which
+in turn is a derivative of [modmuss' original OptiFabric](https://github.com/modmuss50/OptiFabric)
 
-## Installing
+## installing
 
-After installing fabric for 1.15.2, you will need to place the OptiFabric mod jar as well as the optifine installer in the mods folder.
+this mod requires an optifine jar in the mods folder alongside a release of optifabric. for 1.7.2 and onwards this can be sourced
+from [OptiFine's official website](https://optifine.net/downloads), and older versions these can be retrieved either
+from [SpeedyCube64's Pre-1.9 Optifine Archive](https://github.com/speedycube64/Complete_OptiFine_Archive_Pre_1.9) or on
+the [OptiFine history thread](https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/minecraft-mods/1286605-b1-4-1-9-optifine-history).
 
-Fabric Loader should be the latest version from the [Fabric Website](https://fabricmc.net/use/)
+## how it works
 
-If you need more help you can read a more detailed guide [here](https://github.com/modmuss50/OptiFabric/wiki/Install-Tutorial)
+this mod uses [Minecraft-Java-Edition-Speedrunning/fabric-asm](https://github.com/Minecraft-Java-Edition-Speedrunning/fabric-asm), a derivative
+of [Cat Core's Fabric-ASM/no-guava](https://github.com/thecatcore/Fabric-ASM/tree/no-guava) which itself is an updated version
+of [Chocohead's fabric-asm](https://github.com/Chocohead/Fabric-ASM). fabric asm allows more extreme asm modification and the fork used has no dependency on guava or apache
+commons, which older minecraft versions don't provide.
 
+### steps
 
-## Links
+1. the mod looks for an optifine installer or mod jar or zip in the current mods folder
+2. if it finds an installer jar it runs the extract task in its own throwaway classloader
+3. the optifine mod jar is a set of classes that need to replace the ones that minecraft provides
+4. optifine's replacement classes change the name of some lambda methods, so it take a good guess at the old name (using the original minecraft jar)
+5. remap optifine to intermediary
+6. move the patched classes out as they won't do much good on the classpath twice
+7. add optifine to the classpath
+8. register the patching tweaker for every class that needs replacing
+9. replace the target class with the class that was extracted, also do some more fixes to it, and make it public (due to access issues)
+10. hope it works
 
-### [OptiFabric Downloads](https://minecraft.curseforge.com/projects/optifabric)
+## notes
 
-### [Optifine Download](https://optifine.net/downloads)
-
-## Issues
-
-If you happen to find an issue and you believe it is to do with OptiFabric and not Optifine or a mod please open an issue [here](https://github.com/modmuss50/OptiFabric/issues) 
-
-
-## For Mod Devs
-
-Add the following to your build.gradle
-
-```groovy
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-
-dependencies {
-    // replace OptiFabric:<version> with latest version on https://www.curseforge.com/minecraft/mc-mods/optifabric/files that fits your MC version
-    modCompile 'com.github.modmuss50:OptiFabric:1.0.0-beta8'
-
-    //Deps required for optifabric
-    compile 'org.zeroturnaround:zt-zip:1.14'
-} 
-```
-
-Put the standard Optifine jar in /run/mods
-
-Class export can be enabled using the following VM Option, this will extract the overwritten classes to the .optifine folder, useful for debugging.
-
-`-Doptifabric.extract=true`
-
-## Screenshots
-
-Feel free to open a PR with more screenshots.
-
-![](https://ss.modmuss50.me/javaw_2019-05-22_20-36-25.jpg)
-
-![](https://ss.modmuss50.me/javaw_2019-05-22_19-49-41.jpg)
-
-## How it works
-
-This would not have been possible without Chocohead's [Fabric-ASM](https://github.com/Chocohead/Fabric-ASM).
-
-1. The mod looks for an optifine installer or mod jar in the current mods folder
-2. If it finds an installer jar it runs the extract task in its own throwaway classloader.
-3. The optifine mod jar is a set of classes that need to replace the ones that minecraft provides.
-4. Optifine's replacement classes change the name of some lambda methods, so I take a good guess at the old name (using the original minecraft jar).
-5. Remap optifine to intermediary (or yarn in development)
-6. Move the patched classes out as they wont do much good on the classpath twice
-7. Add optifine to the classpath
-8. Register the patching tweaker for every class that needs replacing
-9. Replace the target class with the class that was extracted, also do some more fixes to it, and make it public (due to access issues).
-10. Hope it works
+- this does not work for any optifine releases for minecraft 1.1 except for the optifine light edition due to some method signature crash ([log](optifabric-hd-1.1-crash.log))
+  outside my control
+- this mod does not work in dev or named environments, if someone fixes that do make a pull request
+- the accessWideners are created based on the output of tiny remapper's checkPackageAccess option, but they cannot ever be 100% complete. if you have a crash that has to do with and invalid access, report it and it may be able to be fixed.

@@ -5,7 +5,9 @@ import me.modmuss50.optifabric.Pair;
 import me.modmuss50.optifabric.patcher.ClassCache;
 import net.fabricmc.loader.api.*;
 import org.spongepowered.asm.mixin.Mixins;
+import org.spongepowered.asm.service.*;
 
+import java.io.*;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 public class OptifabricSetup implements Runnable {
     public static final String OPTIFABRIC_INCOMPATIBLE = "optifabric:incompatible";
     public static Path optifineRuntimeJar = null;
+    private static final String optifineMixinConfiguration = "optifabric.optifine.mixins.json";
 
     // this is called early on to allow us to get the transformers in before minecraft starts
     @Override
@@ -24,7 +27,7 @@ public class OptifabricSetup implements Runnable {
         try {
             Pair<Path, ClassCache> runtime = new OptifineSetup().getRuntime();
 
-            // add the optifine jar to the classpath, as
+            // add the optifine jar without classes to be replaced to the classpath
             ClassTinkerers.addURL(runtime.left().toUri().toURL());
 
             OptifineInjector injector = new OptifineInjector(runtime.right());
@@ -38,7 +41,9 @@ public class OptifabricSetup implements Runnable {
             }
             throw new RuntimeException("Failed to setup optifine", e);
         }
-        Mixins.addConfiguration("optifabric.optifine.mixins.json");
+        if (hasOptifineMixins()) {
+            Mixins.addConfiguration(optifineMixinConfiguration);
+        }
     }
 
     private boolean validateMods() {
@@ -57,5 +62,14 @@ public class OptifabricSetup implements Runnable {
             return false;
         }
         return true;
+    }
+
+    private static boolean hasOptifineMixins() {
+        IMixinService service = MixinService.getService();
+        try (InputStream resource = service.getResourceAsStream(optifineMixinConfiguration)) {
+            return resource != null;
+        } catch (IOException e) {
+            return false;
+        }
     }
 }
