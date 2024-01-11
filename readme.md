@@ -7,14 +7,14 @@ in turn is a derivative of [modmuss' original OptiFabric](https://github.com/mod
 
 ## installing
 
-this mod requires an optifine jar in the mods folder alongside a release of optifabric. for 1.7.2 and onwards this can be sourced
+this mod requires an optifine jar in the mods folder alongside optifabric. for 1.7.2 and onwards this can be sourced
 from [OptiFine's official website](https://optifine.net/downloads), and older versions these can be retrieved either
 from [SpeedyCube64's Pre-1.9 Optifine Archive](https://github.com/speedycube64/Complete_OptiFine_Archive_Pre_1.9) or on
 the [OptiFine history thread](https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/minecraft-mods/1286605-b1-4-1-9-optifine-history).
 
 ## how it works
 
-this mod uses [Minecraft-Java-Edition-Speedrunning/fabric-asm](https://github.com/Minecraft-Java-Edition-Speedrunning/fabric-asm), a derivative
+this mod uses [Minecraft-Java-Edition-Speedrunning/fabric-asm](https://github.com/Minecraft-Java-Edition-Speedrunning/fabric-asm), a minor derivative
 of [Cat Core's Fabric-ASM/no-guava](https://github.com/thecatcore/Fabric-ASM/tree/no-guava) which itself is an updated version
 of [Chocohead's fabric-asm](https://github.com/Chocohead/Fabric-ASM). fabric asm allows more extreme asm modification and the fork used has no dependency on guava or apache
 commons, which older minecraft versions don't provide.
@@ -38,3 +38,19 @@ commons, which older minecraft versions don't provide.
   outside my control
 - this mod does not work in dev or named environments, if someone fixes that do make a pull request
 - the accessWideners are created based on the output of tiny remapper's checkPackageAccess option, but they cannot ever be 100% complete. if you have a crash that has to do with and invalid access, report it and it may be able to be fixed.
+
+## class excluder
+
+this is a kind of hidden feature that is occasionally useful to remove files when remapping the jar. to do this, it reads the `optifabric-excluded-classes.json` file
+in `.minecraft/config/` if it exists, and expects the file to contain a mapping of versions (field names) to an array of removable classes (or textures or anything else, it's just
+a filename).
+an example file contents to revert the removal of the profiler for 1.3.2 light is provided below. if the optifine version you are trying to make an excluder extry for has already
+been loaded before in your instance, delete its folder in the `.optifine` folder in `.minecraft` to force a recache.
+
+```json
+{
+  "OptiFine_1.3.2_L_B2": [
+    "ik.class"
+  ]
+}
+```
