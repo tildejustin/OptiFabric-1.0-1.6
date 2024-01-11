@@ -88,7 +88,7 @@ public class OptifineSetup {
             optifineModJar = optifineMod;
         }
 
-        System.out.println("setting up optifine for the first time, this may take a few seconds.");
+        System.out.println("setting up optifine for the first time, this may take a few seconds");
 
         // a jar without srgs
         Path jarOfTheFree = versionDir.resolve("optifine-jar-of-the-free.jar");
@@ -114,6 +114,9 @@ public class OptifineSetup {
         Files.copy(optifineModJar, jarOfTheFree);
         try (FileSystem fs = FileSystems.newFileSystem(jarOfTheFree, null)) {
             for (String s : srgs) {
+                Files.deleteIfExists(fs.getPath(s));
+            }
+            for (String s : Optifabric.getExcludedClasses()) {
                 Files.deleteIfExists(fs.getPath(s));
             }
         }
