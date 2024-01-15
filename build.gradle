@@ -1,13 +1,13 @@
 plugins {
     id "loom"
-    id "legacy-looming"
+    id "ploceus"
 }
 
 version = "$mod_version+$target_version"
 
 dependencies {
     minecraft "com.mojang:minecraft:$minecraft_version"
-    mappings legacy.yarn(minecraft_version, yarn_build)
+    mappings "net.ornithemc:feather:$minecraft_version+build.$feather_build:v2"
     include(modImplementation "com.github.Minecraft-Java-Edition-Speedrunning:fabric-asm:$fabric_asm_version")
     include(implementation "net.fabricmc:mapping-io:$mapping_io_version")
     include(implementation "net.fabricmc:tiny-remapper:$tiny_remapper_version")

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "optifabric-mixin",
+  "version": "${version}",
+  "name": "Optifabric Mixin",
+  "description": "Optifabric is a mod that loads Optifine into Fabric",
+  "authors": [
+    "Modmuss50",
+    "Chocohead",
+    "Hydos",
+    "RedLime",
+    "tildejustin"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/legacy-optifabric",
+    "sources": "https://github.com/tildejustin/optifabric",
+    "issues": "https://github.com/tildejustin/optifabric/issues"
+  },
+  "mixins": [
+    "optifabric.mixins.json"
+  ],
+  "license": "MPL-2.0",
+  "environment": "client",
+  "depends": {
+    "fabricloader": ">=0.14",
+    "minecraft": ">=1.0.0 <=1.2.5"
+  },
+  "accessWidener": "optifabric.accesswidener"
+}

@@ -59,7 +59,7 @@ public class OptifineVersion {
         try (JarFile jarFile = new JarFile(file.toFile())) {
             JarEntry jarEntry = jarFile.getJarEntry("Config.class");
             if (jarEntry == null) {
-                jarEntry = jarFile.getJarEntry("VersionThread.class" /* optifine light and pre-1.3? */);
+                jarEntry = jarFile.getJarEntry("VersionThread.class" /* optifine light? */);
             }
             if (jarEntry == null) {
                 jarEntry = jarFile.getJarEntry("net/optifine/Config.class" /* 1.13+ */);
@@ -79,6 +79,18 @@ public class OptifineVersion {
             }
             if (fieldNode.name.equals("MC_VERSION")) {
                 minecraftVersion = (String) fieldNode.value;
+            }
+        }
+
+        if (version == null || version.isEmpty()) {
+            // inlined in getVersion pre 1.2
+            for (MethodNode methodNode : classNode.methods) {
+                if (methodNode.name.equals("getVersion")) {
+                    version = (String) ((LdcInsnNode) methodNode.instructions.get(2)).cst;
+                }
+            }
+            if (minecraftVersion == null || minecraftVersion.isEmpty()) {
+                minecraftVersion = "old";
             }
         }
 

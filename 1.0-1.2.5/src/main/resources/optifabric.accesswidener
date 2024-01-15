@@ -1,0 +1,17 @@
+accessWidener v2 named
+# 1.0.0
+accessible field net/minecraft/client/Minecraft INSTANCE Lnet/minecraft/client/Minecraft;
+accessible field net/minecraft/entity/particle/Particle red F
+accessible field net/minecraft/entity/particle/Particle green F
+accessible field net/minecraft/entity/particle/Particle blue F
+accessible field net/minecraft/client/gui/widget/ButtonWidget width I
+accessible field net/minecraft/client/gui/widget/ButtonWidget height I
+
+# 1.2.5
+accessible field net/minecraft/unmapped/C_2348249 f_9527567 I
+accessible field net/minecraft/unmapped/C_2348249 f_7845401 I
+accessible field net/minecraft/unmapped/C_1331819 f_1674215 Lnet/minecraft/client/Minecraft;
+accessible field net/minecraft/unmapped/C_1350658 f_0252128 F
+accessible field net/minecraft/unmapped/C_1350658 f_8796412 F
+accessible field net/minecraft/unmapped/C_1350658 f_4630289 F
+accessible field net/minecraft/unmapped/C_0259655 f_8522225 F

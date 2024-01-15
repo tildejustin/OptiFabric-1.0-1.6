@@ -1,10 +1,10 @@
 plugins {
     id "loom"
-    id "legacy-looming"
+    id "ploceus"
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:$minecraft_version"
-    mappings(legacy.yarn(minecraft_version, yarn_build))
+    mappings "net.ornithemc:feather:$minecraft_version+build.$feather_build:v2"
     implementation project(path: ":", configuration: "namedElements")
 }

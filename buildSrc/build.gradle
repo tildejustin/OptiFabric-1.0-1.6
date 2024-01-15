@@ -6,10 +6,11 @@ repositories {
     mavenCentral()
     gradlePluginPortal()
     maven { url "https://maven.fabricmc.net" }
-    maven { url "https://repo.legacyfabric.net/repository/legacyfabric" }
+    maven { url "https://maven.ornithemc.net/releases" }
+    maven { url "https://maven.ornithemc.net/snapshots" }
 }
 
 dependencies {
     implementation "fabric-loom:fabric-loom.gradle.plugin:$loom_version"
-    implementation "net.legacyfabric:legacy-looming:$legacy_looming_version"
+    implementation "ploceus:ploceus.gradle.plugin:$ploceus_version"
 }

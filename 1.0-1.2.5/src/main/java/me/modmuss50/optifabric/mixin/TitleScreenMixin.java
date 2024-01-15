@@ -19,7 +19,7 @@ public abstract class TitleScreenMixin extends Screen {
     @Inject(method = "render", at = @At("RETURN"))
     private void render(CallbackInfo ci) {
         if (!Optifabric.hasError()) {
-            this.drawString(Minecraft.getInstance().textRenderer, OptifineVersion.version, 2, this.height - 20, 0xFFFFFFFF);
+            this.drawString(Minecraft.INSTANCE.textRenderer, OptifineVersion.version, 2, this.height - 20, 0xFFFFFFFF);
         }
     }
 }
