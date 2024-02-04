@@ -1,0 +1,10 @@
+plugins {
+    id "loom"
+    id "ploceus"
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:$minecraft_version"
+    mappings "net.ornithemc:feather:$minecraft_version+build.$feather_build:v2"
+    implementation project(path: ":", configuration: "namedElements")
+}

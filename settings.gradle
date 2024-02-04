@@ -1,15 +1,16 @@
 pluginManagement {
     repositories {
         maven { url "https://maven.fabricmc.net" }
-        maven { url "https://repo.legacyfabric.net/repository/legacyfabric" }
         mavenCentral()
         gradlePluginPortal()
         mavenLocal()
     }
 }
 
-include "1.0-1.2.5"
+include "b1.7.3"
+include "b1.8.1-1.2.5"
 include "1.3-1.5.2"
 include "1.6-1.7.10"
 include "1.8-1.12.2"
 include "1.13-1.13.2"
+include "1.14-1.14.4"

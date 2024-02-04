@@ -23,7 +23,7 @@
   "environment": "client",
   "depends": {
     "fabricloader": ">=0.14",
-    "minecraft": ">=1.0.0 <=1.2.5"
+    "minecraft": ">=1.0.0-beta.8.1 <=1.2.5"
   },
   "accessWidener": "optifabric.accesswidener"
 }

@@ -1,9 +1,9 @@
 accessWidener v2 named
 accessible field net/minecraft/client/gui/widget/ButtonWidget width I
 accessible field net/minecraft/client/gui/widget/ButtonWidget height I
-accessible field net/minecraft/client/option/GameOptions field_946 Lnet/minecraft/client/Minecraft;
-accessible field net/minecraft/client/particle/Particle red F
-accessible field net/minecraft/client/particle/Particle green F
-accessible field net/minecraft/client/particle/Particle blue F
-accessible field net/minecraft/world/World levelProperties Lnet/minecraft/world/level/LevelProperties;
+accessible field net/minecraft/client/options/GameOptions minecraft Lnet/minecraft/client/Minecraft;
+accessible field net/minecraft/client/entity/particle/Particle red F
+accessible field net/minecraft/client/entity/particle/Particle green F
+accessible field net/minecraft/client/entity/particle/Particle blue F
+accessible field net/minecraft/world/World data Lnet/minecraft/world/WorldData;
 accessible field net/minecraft/client/render/GameRenderer lightmapFlicker F
