@@ -7,3 +7,6 @@ accessible field net/minecraft/client/entity/particle/Particle green F
 accessible field net/minecraft/client/entity/particle/Particle blue F
 accessible field net/minecraft/world/World data Lnet/minecraft/world/WorldData;
 accessible field net/minecraft/client/render/GameRenderer lightmapFlicker F
+accessible method net/minecraft/client/render/texture/TextureManager readImage (Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;
+accessible method net/minecraft/block/Block setOpacity (I)Lnet/minecraft/block/Block;
+accessible field net/minecraft/client/resource/pack/AbstractTexturePack file Ljava/io/File;
