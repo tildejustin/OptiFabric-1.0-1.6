@@ -1,2 +1,4 @@
 accessWidener v2 named
-# i could not find a broken access in 1.8-1.12.2, but i am not confident enough in that being true across the board to get rid of the accesswidener
+# 1.8
+accessible field net/minecraft/client/resource/pack/CustomResourcePack file Ljava/io/File;
+accessible method net/minecraft/block/Block setOpacity (I)Lnet/minecraft/block/Block;
