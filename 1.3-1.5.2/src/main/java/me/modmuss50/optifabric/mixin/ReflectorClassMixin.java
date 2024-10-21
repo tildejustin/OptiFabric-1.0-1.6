@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+/* Optifine 1.4.3+ */
 @Pseudo
 @Mixin(targets = "ReflectorClass")
 public abstract class ReflectorClassMixin {

@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Map;
 
+/* Optifine 1.3-1.4.2 */
 @Pseudo
 @Mixin(targets = "Reflector")
 public class ReflectorMixin {
