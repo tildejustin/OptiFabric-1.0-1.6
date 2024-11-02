@@ -1,6 +1,7 @@
 package me.modmuss50.optifabric.mixin;
 
 import me.modmuss50.optifabric.mod.*;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +19,7 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(method = "render", at = @At("RETURN"))
     private void render(CallbackInfo ci) {
-        if (!Optifabric.hasError()) {
+        if (!Optifabric.hasError() && !FabricLoader.getInstance().isModLoaded("fabricated-forge")) {
             this.drawWithShadow(Minecraft.getMinecraft().textRenderer, OptifineVersion.version, 2, this.height - 20, 0xFFFFFFFF);
         }
     }
