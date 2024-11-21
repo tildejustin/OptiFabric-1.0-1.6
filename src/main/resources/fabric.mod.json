@@ -30,5 +30,14 @@
   "depends": {
     "fabricloader": ">=0.14",
     "minecraft": "<=1.14.4"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.github_releases": "https://github.com/tildejustin/optifabric",
+        "modmenu.modrinth": "https://modrinth.com/mod/legacy-optifabric"
+      },
+      "update_checker": false
+    }
   }
 }

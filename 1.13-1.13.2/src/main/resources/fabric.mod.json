@@ -24,5 +24,10 @@
   "depends": {
     "fabricloader": ">=0.14",
     "minecraft": ">=1.13 <=1.13.2"
+  },
+  "custom": {
+    "modmenu": {
+      "parent": "optifabric"
+    }
   }
 }
