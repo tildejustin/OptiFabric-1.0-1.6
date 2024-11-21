@@ -25,5 +25,10 @@
     "fabricloader": ">=0.14",
     "minecraft": ">=1.6 <=1.7.10"
   },
-  "accessWidener": "optifabric.accesswidener"
+  "accessWidener": "optifabric.accesswidener",
+  "custom": {
+    "modmenu": {
+      "parent": "optifabric"
+    }
+  }
 }

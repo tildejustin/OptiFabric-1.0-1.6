@@ -33,5 +33,14 @@
   },
   "breaks": {
     "fabricated-forge": "<2.7.5"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.github_releases": "https://github.com/tildejustin/optifabric",
+        "modmenu.modrinth": "https://modrinth.com/mod/legacy-optifabric"
+      },
+      "update_checker": false
+    }
   }
 }
